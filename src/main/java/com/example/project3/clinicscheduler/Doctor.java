@@ -1,6 +1,6 @@
-package clinicscheduler;
+package com.example.project3.clinicscheduler;
 
-import util.Date;
+import com.example.project3.util.Date;
 
 /**
  * Represents a Doctor who is a provider with a specialty and NPI.

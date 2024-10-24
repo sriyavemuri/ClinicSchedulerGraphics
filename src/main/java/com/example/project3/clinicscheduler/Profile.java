@@ -1,6 +1,6 @@
-package clinicscheduler;
+package com.example.project3.clinicscheduler;
 
-import util.Date;
+import com.example.project3.util.Date;
 
 /**
  * Represents the profile of a person, including their first name, last name, and date of birth.

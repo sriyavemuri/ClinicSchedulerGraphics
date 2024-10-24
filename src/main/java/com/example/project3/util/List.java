@@ -1,4 +1,4 @@
-package util;
+package com.example.project3.util;
 
 /**
  * A generic List class that implements a dynamically growing array without importing Java collections.

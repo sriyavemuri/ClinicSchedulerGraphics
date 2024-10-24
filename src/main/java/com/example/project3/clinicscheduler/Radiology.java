@@ -1,4 +1,4 @@
-package clinicscheduler;
+package com.example.project3.clinicscheduler;
 
 /**
  * Enum class representing types of imaging services (X-ray, Ultrasound, CAT scan).

@@ -1,4 +1,4 @@
-package clinicscheduler;
+package com.example.project3.clinicscheduler;
 
 /**
  * Driver class that runs my software.

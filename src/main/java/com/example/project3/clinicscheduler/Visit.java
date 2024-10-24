@@ -1,6 +1,6 @@
-package clinicscheduler;
+package com.example.project3.clinicscheduler;
 
-import util.Date;
+import com.example.project3.util.Date;
 
 /**
  * Defines a node in a singly linked list that maintains the list of completed appointments aka visits.

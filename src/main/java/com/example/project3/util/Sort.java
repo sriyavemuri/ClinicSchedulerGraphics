@@ -1,7 +1,7 @@
-package util;
-import clinicscheduler.Appointment;
-import clinicscheduler.Person;
-import clinicscheduler.Profile;
+package com.example.project3.util;
+import com.example.project3.clinicscheduler.Appointment;
+import com.example.project3.clinicscheduler.Person;
+import com.example.project3.clinicscheduler.Profile;
 
 /**
  * Class for sorting appointments based on specified criteria.

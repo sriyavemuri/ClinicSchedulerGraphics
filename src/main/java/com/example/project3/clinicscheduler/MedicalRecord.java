@@ -1,6 +1,6 @@
-package clinicscheduler;
+package com.example.project3.clinicscheduler;
 
-import util.Date;
+import com.example.project3.util.Date;
 
 /**
  * Medical Record class. Keeps track of all objects made with the project that stores information.

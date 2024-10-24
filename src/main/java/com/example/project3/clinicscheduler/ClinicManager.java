@@ -1,11 +1,11 @@
-package clinicscheduler;
+package com.example.project3.clinicscheduler;
 
 import java.text.DecimalFormat;
 import java.util.Scanner;
 import java.util.StringTokenizer;
-import util.List;
-import util.Date;
-import util.Sort;
+import com.example.project3.util.List;
+import com.example.project3.util.Date;
+import com.example.project3.util.Sort;
 import java.util.Calendar;
 
 /**

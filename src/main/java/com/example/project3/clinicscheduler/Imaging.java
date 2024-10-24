@@ -1,5 +1,5 @@
-package clinicscheduler;
-import util.Date;
+package com.example.project3.clinicscheduler;
+import com.example.project3.util.Date;
 
 /**
  * Imaging class. Represents an imaging appointment that extends the Appointment class.

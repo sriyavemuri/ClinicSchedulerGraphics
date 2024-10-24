@@ -1,5 +1,5 @@
-package clinicscheduler;
-import util.Date;
+package com.example.project3.clinicscheduler;
+import com.example.project3.util.Date;
 
 /**
  * Maintains a place to store a patient's profile, a list of there visits,

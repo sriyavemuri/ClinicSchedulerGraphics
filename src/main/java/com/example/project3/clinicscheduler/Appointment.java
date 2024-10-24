@@ -1,5 +1,5 @@
 package com.example.project3.clinicscheduler;
-import util.Date;
+import com.example.project3.util.Date;
 
 /**
  * Appointment object. Keeps track of date of appointment, the time of appointment, the patient,

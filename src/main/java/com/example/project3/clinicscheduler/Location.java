@@ -1,4 +1,4 @@
-package clinicscheduler;
+package com.example.project3.clinicscheduler;
 
 /**
  * Defines the locations of the providers with the county and zip code.

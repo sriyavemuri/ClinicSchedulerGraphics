@@ -1,6 +1,6 @@
-package clinicscheduler;
+package com.example.project3.clinicscheduler;
 
-import util.Date;
+import com.example.project3.util.Date;
 
 /**
  * Abstract class representing a healthcare provider.

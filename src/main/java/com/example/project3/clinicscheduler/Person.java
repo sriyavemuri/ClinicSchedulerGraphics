@@ -1,4 +1,4 @@
-package clinicscheduler;
+package com.example.project3.clinicscheduler;
 
 public class Person implements Comparable<Person> {
     protected Profile profile;

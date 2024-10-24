@@ -1,4 +1,4 @@
-package clinicscheduler;
+package com.example.project3.clinicscheduler;
 
 /**
  * Timeslot class. Represents the available appointment slots during the day.

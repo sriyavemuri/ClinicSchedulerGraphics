@@ -1,4 +1,4 @@
-package clinicscheduler;
+package com.example.project3.clinicscheduler;
 
 /**
  * Defines the specialties, and the cost of each visit based on specialty.
