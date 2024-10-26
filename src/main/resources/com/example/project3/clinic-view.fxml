@@ -95,9 +95,38 @@
                     </VBox>
                 </Tab>
 
-                <Tab text="Demo Menu">
-                    <!-- Add content here -->
+                <Tab text="Demo Bar">
+                    <GridPane hgap="10" vgap="10">
+                        <Label text="RU Clinic Scheduler Demo Bar" style="-fx-font-size: 16px; -fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+                        <Label text="Appointments:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <VBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                            <Button text="Schedule"/>
+                            <Button text="Reschedule"/>
+                            <Button text="Cancel"/>
+                        </VBox>
+
+                        <Label text="List of Appointments:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <VBox spacing="5" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                            <Button text="By Date/Time/Provider"/>
+                            <Button text="By Location"/>
+                            <Button text="By Patient"/>
+                            <Button text="Office Visits Only"/>
+                            <Button text="Imaging Visits Only"/>
+                        </VBox>
+
+                        <Label text="Statements:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                        <VBox spacing="5" GridPane.rowIndex="3" GridPane.columnIndex="1">
+                            <Button text="Patient"/>
+                            <Button text="Provider"/>
+                        </VBox>
+                    </GridPane>
                 </Tab>
+
+
+
+
+
             </tabs>
         </TabPane>
     </VBox>
