@@ -86,6 +86,11 @@ public class ClinicManagerController {
         );
 
         clinicTable.setItems(locations);
+
+        // Enable sorting on the table columns
+        cityColumn.setSortable(true);
+        countyColumn.setSortable(true);
+        zipColumn.setSortable(true);
     }
 
     private void loadAppointments() {
