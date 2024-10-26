@@ -13,6 +13,9 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.control.TextArea?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
@@ -80,7 +83,16 @@
                 </Tab>
 
                 <Tab text="Clinic Locations">
-                    <!-- Add content here -->
+                    <VBox spacing="10">
+                        <Label text="Clinic Locations" style="-fx-font-weight: bold;"/>
+                        <TableView fx:id="clinicTable">
+                            <columns>
+                                <TableColumn text="City" fx:id="cityColumn"/>
+                                <TableColumn text="County" fx:id="countyColumn"/>
+                                <TableColumn text="Zip" fx:id="zipColumn"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
                 </Tab>
 
                 <Tab text="Demo Menu">
@@ -90,8 +102,8 @@
         </TabPane>
     </VBox>
 
-    <VBox layoutX="620" layoutY="10" prefWidth="250" prefHeight="450" spacing="10">
+    <VBox layoutX="620" layoutY="10" prefWidth="180" prefHeight="380" spacing="10">
         <Label text="Output Area:" style="-fx-font-weight: bold;"/>
-        <TextArea fx:id="outputArea" wrapText="true" prefHeight="400" prefWidth="400" editable="false"/>
+        <TextArea fx:id="outputArea" wrapText="true" prefHeight="300" prefWidth="160" editable="false"/>
     </VBox>
 </AnchorPane>
