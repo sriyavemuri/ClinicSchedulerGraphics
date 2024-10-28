@@ -10,7 +10,12 @@ import com.example.project3.clinicscheduler.Location;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-
+import com.example.project3.clinicscheduler.Timeslot;
+import javafx.stage.FileChooser;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class ClinicManagerController {
 
@@ -31,24 +36,25 @@ public class ClinicManagerController {
     @FXML private TextField lastNameField;
     @FXML private DatePicker dobPicker;
 
-
     private ObservableList<Location> locations;
 
+
     // ObservableLists for ComboBox (example)
-    private ObservableList<String> timeslots = FXCollections.observableArrayList("9:00 AM", "10:45 AM", "1:30 PM");
+
     private ObservableList<String> providers = FXCollections.observableArrayList("Dr. Patel", "Dr. Lim", "Dr. Harper");
 
     @FXML
     public void initialize() {
-        // Set up ComboBoxes with initial values
-        timeslotCombo.setItems(timeslots);
-        providerCombo.setItems(providers);
+        populateTimeslotComboBoxes();
 
-        // Populate the TableView with Locations
+        // Initialize other ComboBox items and setup the TableView as before
+        String[] providers = {"Dr. Patel", "Dr. Lim", "Dr. Harper"};
+        providerCombo.setItems(FXCollections.observableArrayList(providers));
+
         locations = FXCollections.observableArrayList(Location.values());
         clinicTable.setItems(locations);
 
-        // Set up columns with PropertyValueFactory
+        // Setup columns for the clinic table
         locationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLocation()));
         countyColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCounty()));
         zipColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getZip()));
@@ -58,15 +64,89 @@ public class ClinicManagerController {
         scheduleButton.setOnAction(this::handleSchedule);
         cancelButton.setOnAction(this::handleCancel);
         rescheduleButton.setOnAction(this::handleReschedule);
-        clearButton.setOnAction(this::handleClear); // Link clear button to the handler
+        clearButton.setOnAction(this::handleClear);
         clearRescheduleButton.setOnAction(this::handleClearReschedule);
     }
 
-    // Event handler for the 'Load Providers' button
+
     @FXML
     private void handleLoadProviders(ActionEvent event) {
-        outputArea.appendText("Providers loaded successfully.\n");
+        // Create a FileChooser
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Provider File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+
+        // Show the open file dialog
+        File selectedFile = fileChooser.showOpenDialog(loadProvidersButton.getScene().getWindow());
+
+        if (selectedFile != null) {
+            // Read the file and load provider names
+            loadProvidersFromFile(selectedFile);
+        } else {
+            outputArea.appendText("No file selected.\n");
+        }
     }
+
+    // Helper method to read provider names from the file and update the ComboBox
+    private void loadProvidersFromFile(File file) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            ObservableList<String> providerList = FXCollections.observableArrayList();
+
+            while ((line = br.readLine()) != null) {
+                providerList.add(line.trim()); // Add each provider name to the list
+            }
+
+            providerCombo.setItems(providerList); // Update the ComboBox with the loaded provider names
+            outputArea.appendText("Providers loaded successfully.\n");
+        } catch (IOException e) {
+            outputArea.appendText("Error reading the provider file: " + e.getMessage() + "\n");
+        }
+    }
+
+    private void populateTimeslotComboBoxes() {
+        // Generate available timeslots and populate ComboBoxes
+        Timeslot[] availableSlots = generateAvailableSlots();
+        String[] timeslotStrings = new String[availableSlots.length];
+        for (int i = 0; i < availableSlots.length; i++) {
+            timeslotStrings[i] = availableSlots[i].toString();
+        }
+
+        // Set items for timeslotCombo and newTimeComboBox
+        timeslotCombo.setItems(FXCollections.observableArrayList(timeslotStrings));
+        newTimeComboBox.setItems(FXCollections.observableArrayList(timeslotStrings));
+    }
+
+
+    // Method to generate available time slots
+    private Timeslot[] generateAvailableSlots() {
+        Timeslot[] allSlots = {
+                new Timeslot(9, 0),   // 9:00 AM
+                new Timeslot(9, 30),  // 9:30 AM
+                new Timeslot(10, 0),  // 10:00 AM
+                new Timeslot(10, 30), // 10:30 AM
+                new Timeslot(11, 0),  // 11:00 AM
+                new Timeslot(11, 30), // 11:30 AM
+                new Timeslot(14, 0),  // 2:00 PM
+                new Timeslot(14, 30), // 2:30 PM
+                new Timeslot(15, 0),  // 3:00 PM
+                new Timeslot(15, 30), // 3:30 PM
+                new Timeslot(16, 0),  // 4:00 PM
+                new Timeslot(16, 30)  // 4:30 PM
+        };
+
+        // Filter out occupied slots - Assume you have a method to check availability
+        return filterAvailableSlots(allSlots);
+    }
+
+    // Method to filter available slots (replace this with your actual logic)
+    private Timeslot[] filterAvailableSlots(Timeslot[] allSlots) {
+        // Assuming you have some way to check if a slot is available
+        // Here you should implement your own logic to filter the occupied slots
+        // For the sake of this example, returning all slots
+        return allSlots; // Modify this based on actual availability logic
+    }
+
 
     // Event handler for 'Schedule' button
     @FXML

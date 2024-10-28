@@ -1,80 +1,122 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.project3.gui.ClinicManagerController"
-            prefWidth="800" prefHeight="600">
+<AnchorPane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.project3.gui.ClinicManagerController">
 
-    <SplitPane orientation="VERTICAL" dividerPositions="0.5"
-               AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
-               AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+    <SplitPane dividerPositions="0.5" orientation="VERTICAL" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
-        <ScrollPane fitToWidth="true" fitToHeight="true">
-            <TabPane prefWidth="580" prefHeight="380">
+        <ScrollPane fitToHeight="true" fitToWidth="true">
+            <TabPane prefHeight="380" prefWidth="580">
                 <tabs>
 
                     <Tab text="Schedule / Cancel">
-                        <ScrollPane fitToWidth="true" fitToHeight="true">
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
                             <GridPane hgap="10" vgap="10">
-                                <Label text="Appointment Date:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                                <DatePicker fx:id="appointmentDate" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                                <Label text="Appointment Date:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <DatePicker fx:id="appointmentDate" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                                <Label text="Patient Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                                <TextField fx:id="patientName" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                                <Label text="Patient Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextField fx:id="patientName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                                <Label text="Provider Name:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                                <TextField fx:id="providerName" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                                <Label text="Provider Name:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <TextField fx:id="providerName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                                <Label text="Follow-Up Date:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                                <DatePicker fx:id="followUpDate" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                                <Label text="Follow-Up Date:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                <DatePicker fx:id="followUpDate" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                                <Label text="Type of Visit:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                                <HBox spacing="10" GridPane.rowIndex="4" GridPane.columnIndex="1">
-                                    <RadioButton fx:id="officeVisitRadio" text="Office Visit"/>
-                                    <RadioButton fx:id="imagingServiceRadio" text="Imaging Service"/>
+                                <Label text="Type of Visit:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                    <RadioButton fx:id="officeVisitRadio" text="Office Visit" />
+                                    <RadioButton fx:id="imagingServiceRadio" text="Imaging Service" />
                                 </HBox>
 
-                                <Label text="Timeslot:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-                                <ComboBox fx:id="timeslotCombo" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                                <Label text="Timeslot:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                <ComboBox fx:id="timeslotCombo" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
-                                <Label text="Provider:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-                                <ComboBox fx:id="providerCombo" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+                                <Label text="Provider:" GridPane.rowIndex="7" />
+                                <ComboBox fx:id="providerCombo" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                <Button fx:id="loadProvidersButton" onAction="#handleLoadProviders" text="Load Providers" GridPane.columnIndex="2" GridPane.rowIndex="7" />
 
-                                <HBox spacing="10" GridPane.rowIndex="7" GridPane.columnIndex="1">
-                                    <Button fx:id="scheduleButton" text="Schedule"/>
-                                    <Button fx:id="cancelButton" text="Cancel"/>
-                                    <Button fx:id="clearButton" text="Clear" onAction="#handleClear"/>
+
+                                <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                                    <Button fx:id="scheduleButton" text="Schedule" />
+                                    <Button fx:id="cancelButton" text="Cancel" />
+                                    <Button fx:id="clearButton" onAction="#handleClear" text="Clear" />
 
                                 </HBox>
+                        <columnConstraints>
+                           <ColumnConstraints />
+                           <ColumnConstraints />
+                           <ColumnConstraints />
+                        </columnConstraints>
+                        <rowConstraints>
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                        </rowConstraints>
                             </GridPane>
                         </ScrollPane>
                     </Tab>
 
                     <Tab text="Reschedule">
-                        <ScrollPane fitToWidth="true" fitToHeight="true">
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
                             <GridPane hgap="10" vgap="10">
-                                <Label text="First Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                                <TextField fx:id="firstNameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                                <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <TextField fx:id="firstNameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                                <Label text="Last Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                                <TextField fx:id="lastNameField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                                <Label text="Last Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextField fx:id="lastNameField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                                <Label text="Date of Birth:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                                <DatePicker fx:id="dobPicker" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                                <Label text="Date of Birth:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <DatePicker fx:id="dobPicker" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                                <Label text="New Date:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                                <DatePicker fx:id="newDatePicker" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                                <Label text="New Date:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                <DatePicker fx:id="newDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                                <Label text="New Time:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                                <ComboBox fx:id="newTimeComboBox" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                                <Label text="New Time:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                <ComboBox fx:id="newTimeComboBox" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-                                <HBox spacing="10" GridPane.rowIndex="5" GridPane.columnIndex="1">
-                                    <Button fx:id="rescheduleButton" text="Reschedule"/>
-                                    <Button fx:id="clearRescheduleButton" text="Clear" onAction="#handleClearReschedule"/>
+                                <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                    <Button fx:id="rescheduleButton" text="Reschedule" />
+                                    <Button fx:id="clearRescheduleButton" onAction="#handleClearReschedule" text="Clear" />
                                 </HBox>
+                        <columnConstraints>
+                           <ColumnConstraints />
+                           <ColumnConstraints />
+                        </columnConstraints>
+                        <rowConstraints>
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                        </rowConstraints>
                             </GridPane>
                         </ScrollPane>
                     </Tab>
@@ -82,14 +124,14 @@
 
 
                     <Tab text="Clinic Locations">
-                        <ScrollPane fitToWidth="true" fitToHeight="true">
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
                             <VBox spacing="10">
-                                <Label text="Clinic Locations" style="-fx-font-weight: bold;"/>
+                                <Label style="-fx-font-weight: bold;" text="Clinic Locations" />
                                 <TableView fx:id="clinicTable">
                                     <columns>
-                                        <TableColumn fx:id="locationColumn" text="Location"/>
-                                        <TableColumn fx:id="countyColumn" text="County"/>
-                                        <TableColumn fx:id="zipColumn" text="Zip Code"/>
+                                        <TableColumn fx:id="locationColumn" text="Location" />
+                                        <TableColumn fx:id="countyColumn" text="County" />
+                                        <TableColumn fx:id="zipColumn" text="Zip Code" />
                                     </columns>
                                 </TableView>
                                 <!-- Removed duplicate ComboBoxes -->
@@ -101,9 +143,8 @@
         </ScrollPane>
 
         <VBox spacing="10">
-            <Label text="Output:" style="-fx-font-weight: bold;"/>
-            <TextArea fx:id="outputArea" prefHeight="150" wrapText="true"/>
-            <Button fx:id="loadProvidersButton" text="Load Providers"/> <!-- Added missing button -->
+            <Label style="-fx-font-weight: bold;" text="Output:" />
+            <TextArea fx:id="outputArea" prefHeight="150" wrapText="true" />
         </VBox>
 
     </SplitPane>
