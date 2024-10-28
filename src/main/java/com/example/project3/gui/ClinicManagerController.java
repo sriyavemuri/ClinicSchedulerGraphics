@@ -34,7 +34,11 @@ public class ClinicManagerController {
     @FXML private Button clearRescheduleButton;
     @FXML private TextField firstNameField;
     @FXML private TextField lastNameField;
+    @FXML private TextField patientFirstName;
+    @FXML private TextField patientLastName;
     @FXML private DatePicker dobPicker;
+    @FXML private DatePicker dobPickerReschedule; // For rescheduling
+
 
     private ObservableList<Location> locations;
 
@@ -47,10 +51,11 @@ public class ClinicManagerController {
     public void initialize() {
         populateTimeslotComboBoxes();
 
-        // Initialize other ComboBox items and setup the TableView as before
+        // Initialize provider list
         String[] providers = {"Dr. Patel", "Dr. Lim", "Dr. Harper"};
         providerCombo.setItems(FXCollections.observableArrayList(providers));
 
+        // Initialize locations for the clinic table
         locations = FXCollections.observableArrayList(Location.values());
         clinicTable.setItems(locations);
 
@@ -66,11 +71,9 @@ public class ClinicManagerController {
         rescheduleButton.setOnAction(this::handleReschedule);
         clearButton.setOnAction(this::handleClear);
         clearRescheduleButton.setOnAction(this::handleClearReschedule);
-        // Gray out (disable) the provider dropdown initially
-        providerCombo.setDisable(true);
 
-        // Set button actions
-        loadProvidersButton.setOnAction(this::handleLoadProviders);
+        // Disable the provider dropdown initially
+        providerCombo.setDisable(true);
     }
 
     // Event handler for the 'Load Providers' button
@@ -197,35 +200,92 @@ public class ClinicManagerController {
         }
     }
 
-    // Event handler for 'Clear' button
+    // Event handler for 'Clear' button in Schedule/Cancel tab
     @FXML
     private void handleClear(ActionEvent event) {
         // Clear text fields
-        patientName.clear();
-        providerName.clear();
+        patientFirstName.clear();
+        patientLastName.clear();
         // Clear date pickers
         appointmentDate.setValue(null);
-        followUpDate.setValue(null);
+        dobPicker.setValue(null);
         // Clear combo boxes
         timeslotCombo.getSelectionModel().clearSelection();
         providerCombo.getSelectionModel().clearSelection();
-        // Clear output area and status label
-        outputArea.clear();
-        statusLabel.setText("");
-
-        firstNameField.clear(); // Clear first name
-        lastNameField.clear(); // Clear last name
-        dobPicker.setValue(null); // Clear Date of Birth
     }
 
-    // New handler for clearing reschedule-specific fields
+    // Event handler for 'Clear' button in Reschedule tab
     @FXML
     private void handleClearReschedule(ActionEvent event) {
-        // Clear fields in the Reschedule tab
-        firstNameField.clear(); // Clear first name
-        lastNameField.clear(); // Clear last name
-        dobPicker.setValue(null); // Clear Date of Birth
+        // Clear text fields
+        firstNameField.clear();
+        lastNameField.clear();
+        // Clear date pickers
+        dobPickerReschedule.setValue(null); // Use different ID for the reschedule DOB picker
         newDatePicker.setValue(null);
+        // Clear combo box
         newTimeComboBox.getSelectionModel().clearSelection();
     }
+
+
+    // Event handler for scheduling an appointment
+    @FXML
+    private void handleScheduleAction(ActionEvent event) {
+        outputArea.appendText("Navigated to Schedule Appointment.\n");
+    }
+
+    // Event handler for rescheduling an appointment
+    @FXML
+    private void handleRescheduleAction(ActionEvent event) {
+        outputArea.appendText("Navigated to Reschedule Appointment.\n");
+    }
+
+    // Event handler for canceling an appointment
+    @FXML
+    private void handleCancelAction(ActionEvent event) {
+        outputArea.appendText("Navigated to Cancel Appointment.\n");
+    }
+
+    // Event handler for listing appointments by date, time, or provider
+    @FXML
+    private void handleListByDateTime(ActionEvent event) {
+        outputArea.appendText("Listing appointments by Date/Time/Provider.\n");
+    }
+
+    // Event handler for listing appointments by location
+    @FXML
+    private void handleListByLocation(ActionEvent event) {
+        outputArea.appendText("Listing appointments by Location.\n");
+    }
+
+    // Event handler for listing appointments by patient
+    @FXML
+    private void handleListByPatient(ActionEvent event) {
+        outputArea.appendText("Listing appointments by Patient.\n");
+    }
+
+    // Event handler for listing office visits only
+    @FXML
+    private void handleListOfficeVisits(ActionEvent event) {
+        outputArea.appendText("Listing Office Visits Only.\n");
+    }
+
+    // Event handler for listing imaging visits only
+    @FXML
+    private void handleListImagingVisits(ActionEvent event) {
+        outputArea.appendText("Listing Imaging Visits Only.\n");
+    }
+
+    // Event handler for generating a patient statement
+    @FXML
+    private void handlePatientStatement(ActionEvent event) {
+        outputArea.appendText("Generating Patient Statement.\n");
+    }
+
+    // Event handler for generating a provider statement
+    @FXML
+    private void handleProviderStatement(ActionEvent event) {
+        outputArea.appendText("Generating Provider Statement.\n");
+    }
+
 }
