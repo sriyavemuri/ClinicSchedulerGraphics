@@ -1,154 +1,142 @@
 package com.example.project3.gui;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.*;
+import javafx.event.ActionEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import com.example.project3.clinicscheduler.Location;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
 
-import java.time.LocalDate;
 
 public class ClinicManagerController {
 
-    // Existing FXML fields for Appointment Management
-    @FXML
-    private ComboBox<String> appointmentComboBox; // ComboBox for selecting existing appointments
-    @FXML
-    private ToggleGroup visitTypeToggleGroup;
+    // FXML Fields
+    @FXML private DatePicker appointmentDate, followUpDate, newDatePicker;
+    @FXML private TextField patientName, providerName;
+    @FXML private ComboBox<String> timeslotCombo, providerCombo, newTimeComboBox;
+    @FXML private ComboBox<String> appointmentComboBox;
+    @FXML private RadioButton officeVisitRadio, imagingServiceRadio;
+    @FXML private Button loadProvidersButton, scheduleButton, cancelButton, clearButton, rescheduleButton;
+    @FXML private TextArea outputArea;
+    @FXML private TableView<Location> clinicTable;
+    @FXML private TableColumn<Location, String> locationColumn, countyColumn, zipColumn;
+    @FXML private Label statusLabel;
+    @FXML private Button clearButton1; // for the second clear button
+    @FXML private Button clearRescheduleButton;
+    @FXML private TextField firstNameField;
+    @FXML private TextField lastNameField;
+    @FXML private DatePicker dobPicker;
 
-    @FXML
-    private RadioButton officeVisitRadio;
 
-    @FXML
-    private RadioButton imagingServiceRadio;
+    private ObservableList<Location> locations;
 
-    @FXML
-    private DatePicker newDatePicker; // DatePicker for selecting the new date
-    @FXML
-    private ComboBox<String> newTimeComboBox; // ComboBox for selecting the new time
-    @FXML
-    private Button rescheduleButton; // Button to confirm rescheduling
-    @FXML
-    private Label statusLabel; // Label for displaying status messages
-    @FXML
-    private Button loadProvidersButton; // Button to load providers
-
-    // FXML fields for Clinic Locations
-    @FXML
-    private TableView<ClinicLocation> clinicTable; // TableView for clinic locations
-    @FXML
-    private TableColumn<ClinicLocation, String> cityColumn; // City column
-    @FXML
-    private TableColumn<ClinicLocation, String> countyColumn; // County column
-    @FXML
-    private TableColumn<ClinicLocation, String> zipColumn; // Zip column
+    // ObservableLists for ComboBox (example)
+    private ObservableList<String> timeslots = FXCollections.observableArrayList("9:00 AM", "10:45 AM", "1:30 PM");
+    private ObservableList<String> providers = FXCollections.observableArrayList("Dr. Patel", "Dr. Lim", "Dr. Harper");
 
     @FXML
     public void initialize() {
-        // Initialize the ToggleGroup and assign it to the RadioButtons
-        visitTypeToggleGroup = new ToggleGroup();
-        officeVisitRadio.setToggleGroup(visitTypeToggleGroup);
-        imagingServiceRadio.setToggleGroup(visitTypeToggleGroup);
+        // Set up ComboBoxes with initial values
+        timeslotCombo.setItems(timeslots);
+        providerCombo.setItems(providers);
 
-        // Add listener to the selectedToggleProperty of the ToggleGroup
-        visitTypeToggleGroup.selectedToggleProperty().addListener((observable, oldToggle, newToggle) -> {
-            if (newToggle != null) {
-                boolean isOfficeVisitSelected = newToggle == officeVisitRadio;
-                loadProvidersButton.setDisable(isOfficeVisitSelected);
-            }
-        });
-
-        // Initialize clinic locations table
-        initClinicTable();
-    }
-
-    private void initClinicTable() {
-        // Initialize columns
-        cityColumn.setCellValueFactory(new PropertyValueFactory<>("city"));
-        countyColumn.setCellValueFactory(new PropertyValueFactory<>("county"));
-        zipColumn.setCellValueFactory(new PropertyValueFactory<>("zip"));
-
-        // Populate table with clinic locations
-        ObservableList<ClinicLocation> locations = FXCollections.observableArrayList(
-                new ClinicLocation("Bridgewater", "Somerset County", "08807"),
-                new ClinicLocation("Edison", "Middlesex County", "08817"),
-                new ClinicLocation("Piscataway", "Middlesex County", "08854"),
-                new ClinicLocation("Princeton", "Mercer County", "08542"),
-                new ClinicLocation("Morristown", "Morris County", "07960"),
-                new ClinicLocation("Clark", "Union County", "07066")
-        );
-
+        // Populate the TableView with Locations
+        locations = FXCollections.observableArrayList(Location.values());
         clinicTable.setItems(locations);
 
-        // Enable sorting on the table columns
-        cityColumn.setSortable(true);
-        countyColumn.setSortable(true);
-        zipColumn.setSortable(true);
+        // Set up columns with PropertyValueFactory
+        locationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLocation()));
+        countyColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCounty()));
+        zipColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getZip()));
+
+        // Set button actions
+        loadProvidersButton.setOnAction(this::handleLoadProviders);
+        scheduleButton.setOnAction(this::handleSchedule);
+        cancelButton.setOnAction(this::handleCancel);
+        rescheduleButton.setOnAction(this::handleReschedule);
+        clearButton.setOnAction(this::handleClear); // Link clear button to the handler
+        clearRescheduleButton.setOnAction(this::handleClearReschedule);
     }
 
-    private void loadAppointments() {
-        // Load existing appointments into appointmentComboBox
-        // This might involve fetching from a database or a data structure that holds appointments
+    // Event handler for the 'Load Providers' button
+    @FXML
+    private void handleLoadProviders(ActionEvent event) {
+        outputArea.appendText("Providers loaded successfully.\n");
     }
 
-    private void handleReschedule() {
-        String selectedAppointment = appointmentComboBox.getValue();
-        LocalDate newDate = newDatePicker.getValue();
+    // Event handler for 'Schedule' button
+    @FXML
+    private void handleSchedule(ActionEvent event) {
+        String patient = patientName.getText();
+        String provider = providerCombo.getValue();
+        String time = timeslotCombo.getValue();
+
+        if (patient.isEmpty() || provider == null || time == null) {
+            outputArea.appendText("Please fill all the required fields.\n");
+        } else {
+            outputArea.appendText("Scheduled appointment for " + patient + " with " + provider + " at " + time + ".\n");
+        }
+    }
+
+    // Event handler for 'Cancel' button
+    @FXML
+    private void handleCancel(ActionEvent event) {
+        // Clear appointment-specific fields only
+        patientName.clear();
+        providerName.clear();
+        appointmentDate.setValue(null);
+        followUpDate.setValue(null);
+        outputArea.appendText("Appointment canceled.\n");
+    }
+
+    // Event handler for 'Reschedule' button
+    @FXML
+    private void handleReschedule(ActionEvent event) {
+        String appointment = appointmentComboBox.getValue();
+        String newDate = newDatePicker.getValue() != null ? newDatePicker.getValue().toString() : null;
         String newTime = newTimeComboBox.getValue();
 
-        // Validate inputs
-        if (selectedAppointment == null || newDate == null || newTime == null) {
-            statusLabel.setText("Please select an appointment and enter new details.");
-            return;
-        }
-
-        // Implement the logic to update the appointment (this will depend on your data structure)
-        boolean success = rescheduleAppointment(selectedAppointment, newDate, newTime);
-
-        // Provide feedback
-        if (success) {
-            statusLabel.setText("Appointment rescheduled successfully.");
-            loadAppointments(); // Optionally reload appointments
+        if (appointment == null || newDate == null || newTime == null) {
+            statusLabel.setText("Please select a valid appointment, date, and time.");
         } else {
-            statusLabel.setText("Failed to reschedule appointment. Please try again.");
+            statusLabel.setText("Appointment rescheduled.");
+            outputArea.appendText("Appointment rescheduled to " + newDate + " at " + newTime + ".\n");
         }
     }
 
-    private boolean rescheduleAppointment(String appointment, LocalDate newDate, String newTime) {
-        // Implement your logic to update the appointment in your data model
-        // Return true if successful, false otherwise
-        return true; // Placeholder
+    // Event handler for 'Clear' button
+    @FXML
+    private void handleClear(ActionEvent event) {
+        // Clear text fields
+        patientName.clear();
+        providerName.clear();
+        // Clear date pickers
+        appointmentDate.setValue(null);
+        followUpDate.setValue(null);
+        // Clear combo boxes
+        timeslotCombo.getSelectionModel().clearSelection();
+        providerCombo.getSelectionModel().clearSelection();
+        // Clear output area and status label
+        outputArea.clear();
+        statusLabel.setText("");
+
+        firstNameField.clear(); // Clear first name
+        lastNameField.clear(); // Clear last name
+        dobPicker.setValue(null); // Clear Date of Birth
     }
 
-    // Create a simple model class for ClinicLocation
-    public static class ClinicLocation {
-        private final String city;
-        private final String county;
-        private final String zip;
-
-        public ClinicLocation(String city, String county, String zip) {
-            this.city = city;
-            this.county = county;
-            this.zip = zip;
-        }
-
-        public String getCity() {
-            return city;
-        }
-
-        public String getCounty() {
-            return county;
-        }
-
-        public String getZip() {
-            return zip;
-        }
+    // New handler for clearing reschedule-specific fields
+    @FXML
+    private void handleClearReschedule(ActionEvent event) {
+        // Clear fields in the Reschedule tab
+        firstNameField.clear(); // Clear first name
+        lastNameField.clear(); // Clear last name
+        dobPicker.setValue(null); // Clear Date of Birth
+        newDatePicker.setValue(null);
+        newTimeComboBox.getSelectionModel().clearSelection();
     }
 }
