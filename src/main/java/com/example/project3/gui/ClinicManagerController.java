@@ -66,42 +66,51 @@ public class ClinicManagerController {
         rescheduleButton.setOnAction(this::handleReschedule);
         clearButton.setOnAction(this::handleClear);
         clearRescheduleButton.setOnAction(this::handleClearReschedule);
+        // Gray out (disable) the provider dropdown initially
+        providerCombo.setDisable(true);
+
+        // Set button actions
+        loadProvidersButton.setOnAction(this::handleLoadProviders);
     }
 
-
+    // Event handler for the 'Load Providers' button
     @FXML
     private void handleLoadProviders(ActionEvent event) {
-        // Create a FileChooser
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Provider File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
 
-        // Show the open file dialog
         File selectedFile = fileChooser.showOpenDialog(loadProvidersButton.getScene().getWindow());
 
         if (selectedFile != null) {
-            // Read the file and load provider names
-            loadProvidersFromFile(selectedFile);
+            ObservableList<String> providerNames = readProviderFile(selectedFile);
+            if (providerNames != null) {
+                providerCombo.setItems(providerNames); // Populate the dropdown
+                providerCombo.setDisable(false); // Enable the dropdown
+                outputArea.appendText("Providers loaded successfully.\n");
+            } else {
+                outputArea.appendText("Failed to load providers from the file.\n");
+            }
         } else {
             outputArea.appendText("No file selected.\n");
         }
     }
 
-    // Helper method to read provider names from the file and update the ComboBox
-    private void loadProvidersFromFile(File file) {
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+    // Helper method to read the provider file and return an ObservableList of providers
+    private ObservableList<String> readProviderFile(File file) {
+        ObservableList<String> providers = FXCollections.observableArrayList();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
-            ObservableList<String> providerList = FXCollections.observableArrayList();
-
-            while ((line = br.readLine()) != null) {
-                providerList.add(line.trim()); // Add each provider name to the list
+            while ((line = reader.readLine()) != null) {
+                if (!line.trim().isEmpty()) {
+                    providers.add(line.trim()); // Add non-empty lines as provider names
+                }
             }
-
-            providerCombo.setItems(providerList); // Update the ComboBox with the loaded provider names
-            outputArea.appendText("Providers loaded successfully.\n");
         } catch (IOException e) {
-            outputArea.appendText("Error reading the provider file: " + e.getMessage() + "\n");
+            e.printStackTrace();
+            return null;
         }
+        return providers;
     }
 
     private void populateTimeslotComboBoxes() {

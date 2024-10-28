@@ -105,18 +105,7 @@
                                     <Button fx:id="rescheduleButton" text="Reschedule" />
                                     <Button fx:id="clearRescheduleButton" onAction="#handleClearReschedule" text="Clear" />
                                 </HBox>
-                        <columnConstraints>
-                           <ColumnConstraints />
-                           <ColumnConstraints />
-                        </columnConstraints>
-                        <rowConstraints>
-                           <RowConstraints />
-                           <RowConstraints />
-                           <RowConstraints />
-                           <RowConstraints />
-                           <RowConstraints />
-                           <RowConstraints />
-                        </rowConstraints>
+
                             </GridPane>
                         </ScrollPane>
                     </Tab>
