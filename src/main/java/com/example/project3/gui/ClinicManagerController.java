@@ -16,6 +16,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.time.LocalDate;
 
 public class ClinicManagerController {
 
@@ -252,11 +254,6 @@ public class ClinicManagerController {
         outputArea.appendText("Listing appointments by Date/Time/Provider.\n");
     }
 
-    // Event handler for listing appointments by location
-    @FXML
-    private void handleListByLocation(ActionEvent event) {
-        outputArea.appendText("Listing appointments by Location.\n");
-    }
 
     // Event handler for listing appointments by patient
     @FXML
@@ -288,4 +285,67 @@ public class ClinicManagerController {
         outputArea.appendText("Generating Provider Statement.\n");
     }
 
+    // Event handler for listing appointments by location
+    @FXML
+    private void handleListByLocation(ActionEvent event) {
+        outputArea.appendText("Listing appointments by location.\n");
+        for (Location location : locations) {
+            outputArea.appendText(location.toString() + "\n");
+        }
+    }
+
+    // Method to validate if a timeslot is selected
+    private boolean isTimeslotSelected(ComboBox<String> timeslotCombo) {
+        return timeslotCombo.getSelectionModel().getSelectedItem() != null;
+    }
+
+    // Utility method to handle input validations
+    private boolean validateInput(String patient, String provider, LocalDate date, String time) {
+        if (patient.isEmpty() || provider == null || date == null || time == null) {
+            outputArea.appendText("Please fill all required fields.\n");
+            return false;
+        }
+        return true;
+    }
+
+    // Event handler for exiting the application (if needed)
+    @FXML
+    private void handleExit(ActionEvent event) {
+        Alert exitAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        exitAlert.setTitle("Exit");
+        exitAlert.setHeaderText("Are you sure you want to exit?");
+        exitAlert.setContentText("Unsaved changes will be lost.");
+
+        exitAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                System.exit(0);
+            }
+        });
+    }
+
+    // Example to handle saving appointment data (if required)
+    @FXML
+    private void handleSaveAppointments(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Appointments");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        File saveFile = fileChooser.showSaveDialog(scheduleButton.getScene().getWindow());
+
+        if (saveFile != null) {
+            try {
+                // Assuming you have logic to retrieve scheduled appointments as a string
+                String appointmentData = retrieveScheduledAppointments();
+                Files.writeString(saveFile.toPath(), appointmentData);
+                outputArea.appendText("Appointments saved successfully.\n");
+            } catch (IOException e) {
+                outputArea.appendText("Failed to save appointments.\n");
+            }
+        }
+    }
+
+    // Mock method to retrieve scheduled appointments (replace with actual logic)
+    private String retrieveScheduledAppointments() {
+        return "Sample appointment data\n";
+    }
 }
+
