@@ -11,6 +11,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import com.example.project3.clinicscheduler.Timeslot;
+import com.example.project3.util.Date;
 import javafx.stage.FileChooser;
 import java.io.BufferedReader;
 import java.io.File;
