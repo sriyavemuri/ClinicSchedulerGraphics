@@ -8,8 +8,8 @@
     <SplitPane dividerPositions="0.5" orientation="VERTICAL" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
         <ScrollPane fitToHeight="true" fitToWidth="true">
-            <TabPane prefHeight="380" prefWidth="580">
-                <tabs>
+            <TabPane fx:id="tabPane" prefHeight="380" prefWidth="580">
+            <tabs>
 
                     <Tab text="Schedule / Cancel">
                         <ScrollPane fitToHeight="true" fitToWidth="true">

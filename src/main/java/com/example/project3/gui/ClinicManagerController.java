@@ -18,6 +18,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
+import javafx.scene.control.TabPane;
 
 public class ClinicManagerController {
 
@@ -40,6 +41,7 @@ public class ClinicManagerController {
     @FXML private TextField patientLastName;
     @FXML private DatePicker dobPicker;
     @FXML private DatePicker dobPickerReschedule; // For rescheduling
+    @FXML private TabPane tabPane; // Declare the TabPane variable
 
 
     private ObservableList<Location> locations;
@@ -275,23 +277,25 @@ public class ClinicManagerController {
     }
 
 
-    // Event handler for scheduling an appointment
     @FXML
     private void handleScheduleAction(ActionEvent event) {
         outputArea.appendText("Navigated to Schedule Appointment.\n");
+        tabPane.getSelectionModel().select(tabPane.getTabs().get(0)); // Select the first tab
     }
 
-    // Event handler for rescheduling an appointment
     @FXML
     private void handleRescheduleAction(ActionEvent event) {
         outputArea.appendText("Navigated to Reschedule Appointment.\n");
+        tabPane.getSelectionModel().select(tabPane.getTabs().get(1)); // Select the second tab
     }
 
-    // Event handler for canceling an appointment
     @FXML
     private void handleCancelAction(ActionEvent event) {
         outputArea.appendText("Navigated to Cancel Appointment.\n");
+        tabPane.getSelectionModel().select(tabPane.getTabs().get(0)); // Select the first tab again
     }
+
+
 
     // Event handler for listing appointments by date, time, or provider
     @FXML
