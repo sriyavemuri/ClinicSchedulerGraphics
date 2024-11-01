@@ -53,10 +53,6 @@ public class ClinicManagerController {
     public void initialize() {
         populateTimeslotComboBoxes();
 
-        // Initialize provider list
-        String[] providers = {"Dr. Patel", "Dr. Lim", "Dr. Harper"};
-        providerCombo.setItems(FXCollections.observableArrayList(providers));
-
         // Initialize locations for the clinic table
         locations = FXCollections.observableArrayList(Location.values());
         clinicTable.setItems(locations);
@@ -162,44 +158,93 @@ public class ClinicManagerController {
     }
 
 
-    // Event handler for 'Schedule' button
     @FXML
     private void handleSchedule(ActionEvent event) {
-        String patient = patientName.getText();
+        // Collect input data
+        String patientFirstName = this.patientFirstName.getText();
+        String patientLastName = this.patientLastName.getText();
+        LocalDate appointmentDate = this.appointmentDate.getValue();
+        String dob = (this.dobPicker.getValue() != null) ? this.dobPicker.getValue().toString() : "";
         String provider = providerCombo.getValue();
-        String time = timeslotCombo.getValue();
+        String timeslot = timeslotCombo.getValue();
 
-        if (patient.isEmpty() || provider == null || time == null) {
+        // Collect appointment type
+        String appointmentType = officeVisitRadio.isSelected() ? "Office Visit" : imagingServiceRadio.isSelected() ? "Imaging Service" : "";
+
+        // Validate inputs
+        if (patientFirstName.isEmpty() || patientLastName.isEmpty() || appointmentDate == null || provider == null || timeslot == null || appointmentType.isEmpty()) {
             outputArea.appendText("Please fill all the required fields.\n");
-        } else {
-            outputArea.appendText("Scheduled appointment for " + patient + " with " + provider + " at " + time + ".\n");
+            return;
         }
+
+        // Display the appointment details in the output area
+        outputArea.appendText("Appointment Scheduled:\n");
+        outputArea.appendText("Patient Name: " + patientFirstName + " " + patientLastName + "\n");
+        outputArea.appendText("Date of Birth: " + dob + "\n");
+        outputArea.appendText("Appointment Date: " + appointmentDate.toString() + "\n");
+        outputArea.appendText("Provider: " + provider + "\n");
+        outputArea.appendText("Timeslot: " + timeslot + "\n");
+        outputArea.appendText("Type of Visit: " + appointmentType + "\n\n");
     }
 
-    // Event handler for 'Cancel' button
     @FXML
     private void handleCancel(ActionEvent event) {
-        // Clear appointment-specific fields only
-        patientName.clear();
-        providerName.clear();
-        appointmentDate.setValue(null);
-        followUpDate.setValue(null);
-        outputArea.appendText("Appointment canceled.\n");
-    }
+        // Collect current appointment details before clearing
+        String patientFirstNameValue = patientFirstName.getText();
+        String patientLastNameValue = patientLastName.getText();
+        LocalDate appointmentDateValue = appointmentDate.getValue();
+        String dobValue = (dobPicker.getValue() != null) ? dobPicker.getValue().toString() : "";
+        String providerValue = providerCombo.getValue();
+        String timeslotValue = timeslotCombo.getValue();
 
+        // Display cancellation details in the output area
+        if (!patientFirstNameValue.isEmpty() && !patientLastNameValue.isEmpty()) {
+            outputArea.appendText("Appointment Canceled:\n");
+            outputArea.appendText("Patient Name: " + patientFirstNameValue + " " + patientLastNameValue + "\n");
+            outputArea.appendText("Date of Birth: " + dobValue + "\n");
+            outputArea.appendText("Appointment Date: " + (appointmentDateValue != null ? appointmentDateValue.toString() : "Not Scheduled") + "\n");
+            outputArea.appendText("Provider: " + (providerValue != null ? providerValue : "Not Selected") + "\n");
+            outputArea.appendText("Timeslot: " + (timeslotValue != null ? timeslotValue : "Not Selected") + "\n\n");
+        } else {
+            outputArea.appendText("No appointment details available to cancel.\n");
+        }
+
+        // Clear appointment-specific fields
+        patientFirstName.clear();
+        patientLastName.clear();
+        appointmentDate.setValue(null);
+        dobPicker.setValue(null);
+        timeslotCombo.getSelectionModel().clearSelection();
+        providerCombo.getSelectionModel().clearSelection();
+        officeVisitRadio.setSelected(false);
+        imagingServiceRadio.setSelected(false);
+    }
     // Event handler for 'Reschedule' button
     @FXML
     private void handleReschedule(ActionEvent event) {
-        String appointment = appointmentComboBox.getValue();
-        String newDate = newDatePicker.getValue() != null ? newDatePicker.getValue().toString() : null;
+        // Get the new appointment details from the UI components
+        String firstName = firstNameField.getText();
+        String lastName = lastNameField.getText();
+        LocalDate newDate = newDatePicker.getValue();
         String newTime = newTimeComboBox.getValue();
 
-        if (appointment == null || newDate == null || newTime == null) {
-            statusLabel.setText("Please select a valid appointment, date, and time.");
-        } else {
-            statusLabel.setText("Appointment rescheduled.");
-            outputArea.appendText("Appointment rescheduled to " + newDate + " at " + newTime + ".\n");
+        // Validate inputs
+        if (firstName.isEmpty() || lastName.isEmpty() || newDate == null || newTime == null) {
+            statusLabel.setText("Please fill in all fields: First Name, Last Name, New Date, and New Time.");
+            return;
         }
+
+        // Display rescheduling details in the output area
+        outputArea.appendText("Appointment Rescheduled:\n");
+        outputArea.appendText("Patient Name: " + firstName + " " + lastName + "\n");
+        outputArea.appendText("New Appointment Date: " + newDate.toString() + "\n");
+        outputArea.appendText("New Time: " + newTime + "\n\n");
+
+        // Update status label
+        statusLabel.setText("Appointment rescheduled successfully.");
+
+        // Clear the input fields after rescheduling
+        handleClearReschedule(event);
     }
 
     // Event handler for 'Clear' button in Schedule/Cancel tab
@@ -348,4 +393,3 @@ public class ClinicManagerController {
         return "Sample appointment data\n";
     }
 }
-
