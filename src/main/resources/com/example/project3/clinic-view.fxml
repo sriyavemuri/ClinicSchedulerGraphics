@@ -115,17 +115,17 @@
                                 </Menu>
 
                                 <!-- List of Appointments Menu -->
-                                <Menu text="List of Appointments">
-                                    <MenuItem text="By Date/Time/Provider" onAction="#handleListByDateTime"/>
-                                    <MenuItem text="By Location" onAction="#handleListByLocation"/>
-                                    <MenuItem text="By Patient" onAction="#handleListByPatient"/>
-                                    <MenuItem text="Office Visits Only" onAction="#handleListOfficeVisits"/>
-                                    <MenuItem text="Imaging Visits Only" onAction="#handleListImagingVisits"/>
+                                <Menu text="List Appointments">
+                                    <MenuItem text="By Date/Time/Provider" onAction="#handleListByDateTime"/> <!-- PA -->
+                                    <MenuItem text="By Location" onAction="#handleListByLocation"/>  <!-- PL -->
+                                    <MenuItem text="By Patient" onAction="#handleListByPatient"/> <!-- PP -->
+                                    <MenuItem text="Office Visits Only" onAction="#handleListOfficeVisits"/> <!-- PO -->
+                                    <MenuItem text="Imaging Visits Only" onAction="#handleListImagingVisits"/> <!-- PI -->
                                 </Menu>
 
                                 <!-- Statements Menu -->
                                 <Menu text="Statements">
-                                    <MenuItem text="Patient" onAction="#handlePatientStatement"/>
+                                    <MenuItem text="Patient" onAction="#handlePatientStatement"/> <!-- PC -->
                                     <MenuItem text="Provider" onAction="#handleProviderStatement"/>
                                 </Menu>
                             </MenuBar>

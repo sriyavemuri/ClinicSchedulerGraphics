@@ -1,65 +1,58 @@
 package com.example.project3.gui;
-
+import com.example.project3.util.*;
+import com.example.project3.clinicscheduler.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
-import com.example.project3.clinicscheduler.Timeslot;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.time.LocalDate;
-import javafx.scene.control.TabPane;
-import com.example.project3.util.*;
-import com.example.project3.clinicscheduler.*;
+import java.text.DecimalFormat;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+/**
+ * Controller Class for JavaFx Project. Essentially the backend for the FXML front-end UI.
+ * Carries out all operations in maintaining clinic manager system.
+ * @author Sriya Vemuri, Zeel Patel
+ */
 public class ClinicManagerController {
-
-    // FXML Fields
-    @FXML private DatePicker appointmentDate, followUpDate, newDatePicker;
-    @FXML private TextField patientName, providerName;
-    @FXML private ComboBox<Timeslot> timeslotCombo;
+    /**
+     * FXML Fields
+     */
+    @FXML private DatePicker appointmentDate, followUpDate, newDatePicker, dobPicker, dobPickerReschedule;
+    @FXML private TextField patientName, providerName, firstNameField, lastNameField, patientFirstName, patientLastName, npiTextField;
+    @FXML private ComboBox<Timeslot> timeslotCombo, newTimeComboBox, existingTimeComboBox;
     @FXML private ComboBox<String> providerCombo;
-    @FXML private ComboBox<Timeslot> newTimeComboBox;
-    @FXML private ComboBox<Timeslot> existingTimeComboBox;
     @FXML private ComboBox<Radiology> imagingTypeCombo;
-    @FXML private ComboBox<String> appointmentComboBox;
     @FXML private RadioButton officeVisitRadio, imagingServiceRadio;
-    @FXML private Button loadProvidersButton, scheduleButton, cancelButton, clearButton, rescheduleButton;
+    @FXML private Button loadProvidersButton, scheduleButton, cancelButton, clearButton, rescheduleButton, clearButton1, clearRescheduleButton;
     @FXML private TextArea outputArea;
     @FXML private TableView<Location> clinicTable;
     @FXML private TableColumn<Location, String> locationColumn, countyColumn, zipColumn;
-    @FXML private Label statusLabel;
-    @FXML private Button clearButton1; // for the second clear button
-    @FXML private Button clearRescheduleButton;
-    @FXML private TextField firstNameField;
-    @FXML private TextField lastNameField;
-    @FXML private TextField patientFirstName;
-    @FXML private TextField patientLastName;
-    @FXML private DatePicker dobPicker;
-    @FXML private DatePicker dobPickerReschedule; // For rescheduling
-    @FXML private TabPane tabPane; // Declare the TabPane variable
-    @FXML private Label imagingTypeLabel;
-    @FXML private Label npiLabel;
-    @FXML private TextField npiTextField;
+    @FXML private Label statusLabel, imagingTypeLabel, npiLabel;
+    @FXML private TabPane tabPane;
 
+    /**
+     * Holds various configuration and selection options for the clinic management GUI.
+     */
     private ObservableList<Location> locations;
     private ToggleGroup visitTypeGroup;
     private ObservableList<Radiology> imagingTypes;
 
-    // List to store all providers, appointments, and technicians
+    /**
+     * List to store all providers, appointments, and technicians
+     */
     private List<Provider> providers = new List<>();
     private List<Appointment> appointmentList = new List<>();
     private List<Technician> technicianList = new List<>(); // circular list of technicians
 
+    /**
+     * Starts up the JavaFx GUI for the program.
+     */
     @FXML
     public void initialize() {
         populateTimeslotComboBoxes();
@@ -109,6 +102,10 @@ public class ClinicManagerController {
         return new Date(year, month, day);
     }
 
+    /**
+     * Handles if a file is eligible to be loaded and read for a providers text file.
+     * @param event Javafx action
+     */
     @FXML
     private void handleLoadProviders(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -124,6 +121,9 @@ public class ClinicManagerController {
         }
     }
 
+    /**
+     * Updates provider dropdown based on provider list.
+     */
     private void updateProviderCombo() {
         ObservableList<String> selectedProviders = FXCollections.observableArrayList();
         for (int i = 0; i < providers.size(); i++) {
@@ -140,6 +140,9 @@ public class ClinicManagerController {
         providerCombo.setItems(selectedProviders);
     }
 
+    /**
+     * Alters GUI depending on whether user is scheduling Doctor or Technician Appointment.
+     */
     private void updateVisitType() {
         boolean isOfficeVisitSelected = officeVisitRadio.isSelected();
         boolean isImagingServiceSelected = imagingServiceRadio.isSelected();
@@ -157,6 +160,10 @@ public class ClinicManagerController {
         imagingTypeCombo.setManaged(isImagingServiceSelected);
     }
 
+    /**
+     * Reads a loaded textfile and organizes the providers on the textfile.
+     * @param filename text file loaded in by user.
+     */
     private void loadProvidersFromFile(File filename) {
         Scanner sc = null;
         try {
@@ -288,6 +295,9 @@ public class ClinicManagerController {
         }
     }
 
+    /**
+     * Handles timeslot dropdown menu.
+     */
     private void populateTimeslotComboBoxes() {
         Timeslot[] availableSlots = generateAvailableSlots();
         ObservableList<Timeslot> timeslotList = FXCollections.observableArrayList(availableSlots);
@@ -296,9 +306,12 @@ public class ClinicManagerController {
         existingTimeComboBox.setItems(timeslotList);
     }
 
-    // Method to generate available time slots
+    /**
+     * Timeslot dropdown options.
+     * @return none
+     */
     private Timeslot[] generateAvailableSlots() {
-        Timeslot[] allSlots = {
+        return new Timeslot[]{
                 new Timeslot(9, 0),   // 9:00 AM
                 new Timeslot(9, 30),  // 9:30 AM
                 new Timeslot(10, 0),  // 10:00 AM
@@ -312,27 +325,23 @@ public class ClinicManagerController {
                 new Timeslot(16, 0),  // 4:00 PM
                 new Timeslot(16, 30)  // 4:30 PM
         };
-
-        // Filter out occupied slots - Assume you have a method to check availability
-        return filterAvailableSlots(allSlots);
     }
 
-    // Method to filter available slots (replace this with your actual logic)
-    private Timeslot[] filterAvailableSlots(Timeslot[] allSlots) {
-        // Assuming you have some way to check if a slot is available
-        // Here you should implement your own logic to filter the occupied slots
-        // For the sake of this example, returning all slots
-        return allSlots; // Modify this based on actual availability logic
-    }
-
+    /**
+     * T - Schedules technician appointment.
+     * @param apptDate appointment Date as a Date object
+     * @param patientProfile patient basic profile (name, dob)
+     * @param imagingType radiology room (xray, catscan, ultrasound)
+     * @param timeslot time for requested appointment
+     */
     private void scheduleImagingAppointment(Date apptDate, Profile patientProfile, Radiology imagingType, Timeslot timeslot) {
         if (hasExistingAppointment(apptDate, timeslot, patientProfile)) {
-            outputArea.appendText(formatPatientName(patientProfile) + " has an existing appointment at the same time slot.");
+            outputArea.appendText(formatPatientName(patientProfile) + " has an existing appointment at the same time slot.\n");
             return;
         }
         Technician availableTechnician = findAvailableTechnician(apptDate, timeslot, imagingType);
         if (availableTechnician == null) {
-            outputArea.appendText("Cannot find an available technician at all locations for " + imagingType + " at slot " + timeslot + ".");
+            outputArea.appendText("Cannot find an available technician at all locations for " + imagingType + " at slot " + timeslot + ".\n");
             return;
         }
         bookImagingAppointment(apptDate, timeslot, patientProfile, availableTechnician, imagingType);
@@ -352,7 +361,7 @@ public class ClinicManagerController {
         Patient patient = new Patient(patientProfile, imagingVisit);
         newImagingAppointment.setPatient(patient);
         appointmentList.add(newImagingAppointment);
-        outputArea.appendText(newImagingAppointment + " booked.");
+        outputArea.appendText(newImagingAppointment + " booked.\n");
     }
 
     /**
@@ -505,20 +514,28 @@ public class ClinicManagerController {
         return null; // No provider with the given NPI found
     }
 
+    /**
+     * D - Schedules doctor appointment
+     * @param apptDate appointment Date
+     * @param patientProfile patient basic info (name and DOB)
+     * @param providerString requested provider as a string.
+     * @param timeslot time of requested appointment.
+     * @param providerByNPI NPI of requested doctor.
+     */
     private void scheduleDoctorAppointment(Date apptDate, Profile patientProfile, String providerString, Timeslot timeslot, Provider providerByNPI) {
         if (isDuplicateAppointment(apptDate, timeslot, patientProfile)) {
-            outputArea.appendText(formatPatientName(patientProfile) + " has an existing appointment at the same time slot.");
+            outputArea.appendText(formatPatientName(patientProfile) + " has an existing appointment at the same time slot.\n");
             return;
         }
         if (!isProviderAvailable(providerByNPI, apptDate, timeslot)) {
-            outputArea.appendText(providerString + " is not available at slot " + timeslot);
+            outputArea.appendText(providerString + " is not available at slot " + timeslot + "\n");
             return;
         }
         bookAppointment(apptDate, timeslot, patientProfile, providerByNPI);
     }
 
     /**
-     * Books an appointment by adding it to the appointment list.
+     * D Helper Method. Books an appointment by adding it to the appointment list.
      * @param appointmentDate The appointment date.
      * @param appointmentTimeslot The appointment timeslot.
      * @param patientProfile The patient's profile.
@@ -528,7 +545,7 @@ public class ClinicManagerController {
         Patient patient = new Patient(patientProfile, new Visit(null, null));
         Appointment appointment = new Appointment(appointmentDate, appointmentTimeslot, patient, provider);
         appointmentList.add(appointment);
-        outputArea.appendText(appointment + " booked.");
+        outputArea.appendText(appointment + " booked.\n");
     }
 
     /**
@@ -587,6 +604,10 @@ public class ClinicManagerController {
         return array;
     }
 
+    /**
+     * D and T - Schedule Doctor and Technician Appointment.
+     * @param event JavaFx action.
+     */
     @FXML
     private void handleSchedule(ActionEvent event) {
         // Collect input data
@@ -617,22 +638,28 @@ public class ClinicManagerController {
 
             // Call scheduleImagingAppointment method
             scheduleImagingAppointment(apptDate, patientProfile, imagingType, timeslot);
+            handleClear(event);
 
         } else if (officeVisitRadio.isSelected()) {
             String npi = npiTextField.getText();
             Provider providerByNPI = findProviderByNPI(npi);
             if (providerByNPI == null) {
-                outputArea.appendText(npi + " - provider doesn't exist.");
+                outputArea.appendText(npi + " - provider doesn't exist.\n");
                 return;
             }
             // Call scheduleDoctorAppointment method
             scheduleDoctorAppointment(apptDate, patientProfile, providerString, timeslot, providerByNPI);
+            handleClear(event);
         } else {
             outputArea.appendText("Please select a type of visit.\n");
         }
 
     }
 
+    /**
+     * C - Cancel Appointment.
+     * @param event JavaFx action.
+     */
     @FXML
     private void handleCancel(ActionEvent event) {
         // Collect input data
@@ -668,7 +695,11 @@ public class ClinicManagerController {
                     patientFirstName + " " + patientLastName + " " + dob +  " - appointment does not exist.\n");
         }
     }
-    // Event handler for 'Reschedule' button
+
+    /**
+     * R - Reschedule Appointment.
+     * @param event JavaFx action.
+     */
     @FXML
     private void handleReschedule(ActionEvent event) {
         // Get the new appointment details from the UI components
@@ -741,7 +772,10 @@ public class ClinicManagerController {
         handleClearReschedule(event);
     }
 
-    // Event handler for 'Clear' button in Schedule/Cancel tab
+    /**
+     * Clears all input from the front-end on Schedule/Cancel Appointment tab.
+     * @param event JavaFx action.
+     */
     @FXML
     private void handleClear(ActionEvent event) {
         // Clear text fields
@@ -755,7 +789,10 @@ public class ClinicManagerController {
         providerCombo.getSelectionModel().clearSelection();
     }
 
-    // Event handler for 'Clear' button in Reschedule tab
+    /**
+     * Clears all input from the front-end on Reschedule Appointment tab.
+     * @param event JavaFx action.
+     */
     @FXML
     private void handleClearReschedule(ActionEvent event) {
         // Clear text fields
@@ -768,88 +805,607 @@ public class ClinicManagerController {
         newTimeComboBox.getSelectionModel().clearSelection();
     }
 
-
+    /**
+     * Navigates to Schedule Appointment Menu from Demo Bar.
+     * @param event JavaFx action.
+     */
     @FXML
     private void handleScheduleAction(ActionEvent event) {
         outputArea.appendText("Navigated to Schedule Appointment.\n");
         tabPane.getSelectionModel().select(tabPane.getTabs().get(0)); // Select the first tab
     }
 
+    /**
+     * Navigates to Reschedule Appointment Menu from Demo Bar.
+     * @param event JavaFx action.
+     */
     @FXML
     private void handleRescheduleAction(ActionEvent event) {
         outputArea.appendText("Navigated to Reschedule Appointment.\n");
         tabPane.getSelectionModel().select(tabPane.getTabs().get(1)); // Select the second tab
     }
 
+    /**
+     * Navigates to Cancel Appointment Menu from Demo Bar.
+     * @param event JavaFx action.
+     */
     @FXML
     private void handleCancelAction(ActionEvent event) {
         outputArea.appendText("Navigated to Cancel Appointment.\n");
         tabPane.getSelectionModel().select(tabPane.getTabs().get(0)); // Select the first tab again
     }
 
-
-
-    // Event handler for listing appointments by date, time, or provider
+    /**
+     * PA - List of all appointments, ordered by date/time/provider.
+     * @param event JavaFx action.
+     */
     @FXML
     private void handleListByDateTime(ActionEvent event) {
-        outputArea.appendText("Listing appointments by Date/Time/Provider.\n");
+        if (appointmentList.isEmpty()) {
+            outputArea.appendText("Schedule calendar is empty.\n");
+        } else {
+            Appointment[] appointmentsArray = new Appointment[appointmentList.size()];
+            for (int i = 0; i < appointmentList.size(); i++) {
+                appointmentsArray[i] = appointmentList.get(i);
+            }
+            boolean swapped;
+            for (int i = 0; i < appointmentsArray.length - 1; i++) {
+                swapped = false;
+                for (int j = 0; j < appointmentsArray.length - i - 1; j++) {
+                    if (compareAppointmentsByDateTimeProvider(appointmentsArray[j], appointmentsArray[j + 1]) > 0) {
+                        Appointment temp = appointmentsArray[j];
+                        appointmentsArray[j] = appointmentsArray[j + 1];
+                        appointmentsArray[j + 1] = temp;
+                        swapped = true;
+                    }
+                }
+                if (!swapped) break;
+            }
+            outputArea.appendText("\n** List of appointments, ordered by date/time/provider.**\n");
+            for (Appointment appointment : appointmentsArray) {
+                outputArea.appendText(appointment.toString() + "\n");
+            }
+            outputArea.appendText("** end of list **");
+        }
     }
 
-
-    // Event handler for listing appointments by patient
-    @FXML
-    private void handleListByPatient(ActionEvent event) {
-        outputArea.appendText("Listing appointments by Patient.\n");
+    /**
+     * Compares two appointments by date, time, and provider.
+     *
+     * @param a1 The first appointment.
+     * @param a2 The second appointment.
+     * @return A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
+     */
+    private int compareAppointmentsByDateTimeProvider(Appointment a1, Appointment a2) {
+        int dateComparison = a1.getDate().compareTo(a2.getDate());
+        if (dateComparison != 0) {
+            return dateComparison;
+        }
+        int timeComparison = a1.getTimeslot().compareTo(a2.getTimeslot());
+        if (timeComparison != 0) {
+            return timeComparison;
+        }
+        Profile provider1 = a1.getProvider().getProfile();
+        Profile provider2 = a2.getProvider().getProfile();
+        int lastNameComparison = provider1.getLname().compareTo(provider2.getLname());
+        if (lastNameComparison != 0) {
+            return lastNameComparison;
+        }
+        return provider1.getFname().compareTo(provider2.getFname());
     }
 
-    // Event handler for listing office visits only
-    @FXML
-    private void handleListOfficeVisits(ActionEvent event) {
-        outputArea.appendText("Listing Office Visits Only.\n");
-    }
-
-    // Event handler for listing imaging visits only
-    @FXML
-    private void handleListImagingVisits(ActionEvent event) {
-        outputArea.appendText("Listing Imaging Visits Only.\n");
-    }
-
-    // Event handler for generating a patient statement
-    @FXML
-    private void handlePatientStatement(ActionEvent event) {
-        outputArea.appendText("Generating Patient Statement.\n");
-    }
-
-    // Event handler for generating a provider statement
-    @FXML
-    private void handleProviderStatement(ActionEvent event) {
-        outputArea.appendText("Generating Provider Statement.\n");
-    }
-
-    // Event handler for listing appointments by location
+    /**
+     * PL - List appointments by county/date/time
+     * @param event JavaFx event.
+     */
     @FXML
     private void handleListByLocation(ActionEvent event) {
-        outputArea.appendText("Listing appointments by location.\n");
-        for (Location location : locations) {
-            outputArea.appendText(location.toString() + "\n");
+        if (appointmentList.isEmpty()) {
+            outputArea.appendText("Schedule calendar is empty.\n");
+            return;
+        }
+        sortByLocationLengthVersion();
+        outputArea.appendText("\n** List of appointments, ordered by county/date/time. **\n");
+        for (int i = 0; i < appointmentList.size(); i++) {
+            System.out.println(appointmentList.get(i).toString());
+        }
+        outputArea.appendText("** end of list **\n");
+    }
+
+    /**
+     * PL In-place bubble sort method to order appointments by county (location), then date, and then timeslot.
+     */
+    private void sortByLocationLengthVersion() {
+        boolean swapped;
+        for (int i = 0; i < appointmentList.size() - 1; i++) {
+            swapped = false;
+            for (int j = 0; j < appointmentList.size() - i - 1; j++) {
+                if (shouldSwapByLocationLength(j)) {
+                    swapAppointments(j);
+                    swapped = true;
+                }
+            }
+            if (!swapped) {
+                break; // List is already sorted
+            }
         }
     }
 
-    // Method to validate if a timeslot is selected
-    private boolean isTimeslotSelected(ComboBox<String> timeslotCombo) {
-        return timeslotCombo.getSelectionModel().getSelectedItem() != null;
-    }
+    /**
+     * Helper method to determine if two appointments should be swapped by location, date, timeslot, and patient full name length.
+     *
+     * @param index The current index of the appointment.
+     * @return True if the appointments should be swapped, false otherwise.
+     */
+    private boolean shouldSwapByLocationLength(int index) {
+        Appointment currentAppointment = appointmentList.get(index);
+        Appointment nextAppointment = appointmentList.get(index + 1);
 
-    // Utility method to handle input validations
-    private boolean validateInput(String patient, String provider, LocalDate date, String time) {
-        if (patient.isEmpty() || provider == null || date == null || time == null) {
-            outputArea.appendText("Please fill all required fields.\n");
-            return false;
+        Provider currentProvider = (Provider) currentAppointment.getProvider();
+        Provider nextProvider = (Provider) nextAppointment.getProvider();
+        Location currentLocation = currentProvider.getLocation();
+        Location nextLocation = nextProvider.getLocation();
+
+        // Compare by county
+        int countyComparison = currentLocation.getCounty().compareTo(nextLocation.getCounty());
+        if (countyComparison > 0) {
+            return true;
+        } else if (countyComparison == 0) {
+            // Compare by date
+            int dateComparison = currentAppointment.getDate().compareTo(nextAppointment.getDate());
+            if (dateComparison > 0) {
+                return true;
+            } else if (dateComparison == 0) {
+                // Compare by timeslot
+                int timeslotComparison = currentAppointment.getTimeslot().compareTo(nextAppointment.getTimeslot());
+                if (timeslotComparison > 0) {
+                    return true;
+                } else if (timeslotComparison == 0) {
+                    // Compare by patient's full name length
+                    String currentFullName = currentAppointment.getPatient().getProfile().getFname() + " " +
+                            currentAppointment.getPatient().getProfile().getLname();
+                    String nextFullName = nextAppointment.getPatient().getProfile().getFname() + " " +
+                            nextAppointment.getPatient().getProfile().getLname();
+
+                    if (currentFullName.length() > nextFullName.length()) {
+                        return true;
+                    } else if (currentFullName.length() == nextFullName.length()) {
+                        // Compare by patient's full name lexicographically if lengths are equal
+                        return currentFullName.compareTo(nextFullName) > 0;
+                    }
+                }
+            }
         }
-        return true;
+        return false;
     }
 
-    // Event handler for exiting the application (if needed)
+    /**
+     * Helper method to swap two appointments in the appointment list.
+     *
+     * @param index The current index of the appointment to be swapped.
+     */
+    private void swapAppointments(int index) {
+        Appointment currentAppointment = appointmentList.get(index);
+        Appointment nextAppointment = appointmentList.get(index + 1);
+        appointmentList.set(index, nextAppointment);
+        appointmentList.set(index + 1, currentAppointment);
+    }
+
+    /**
+     * PP - List of all appointments ordered by patient/date/time
+     * @param event Javafx action.
+     */
+    @FXML
+    private void handleListByPatient(ActionEvent event) {
+        if (appointmentList.isEmpty()) {
+            outputArea.appendText("Schedule calendar is empty.\n");
+            return;
+        }
+        Appointment[] appointmentsArray = new Appointment[appointmentList.size()];
+        for (int i = 0; i < appointmentList.size(); i++) {
+            appointmentsArray[i] = appointmentList.get(i);
+        }
+        sortAppointmentsByPatient(appointmentsArray);
+        outputArea.appendText("\n** Appointments ordered by patient/date/time **\n");
+        for (int i = 0; i < appointmentsArray.length; i++) {
+            outputArea.appendText(appointmentsArray[i].toString() + "\n");
+        }
+        outputArea.appendText("** end of list **\n");
+    }
+
+    /**
+     * Helper method to sort appointments by patient profile, then date, and then timeslot.
+     * @param appointmentsArray The array of appointments to be sorted.
+     */
+    private void sortAppointmentsByPatient(Appointment[] appointmentsArray) {
+        // Implementing a simple bubble sort to meet project restrictions
+        for (int i = 0; i < appointmentsArray.length - 1; i++) {
+            for (int j = 0; j < appointmentsArray.length - i - 1; j++) {
+                // Compare by patient profile (last name, first name)
+                Profile profile1 = appointmentsArray[j].getPatient().getProfile();
+                Profile profile2 = appointmentsArray[j + 1].getPatient().getProfile();
+                int profileComparison = profile1.compareTo(profile2);
+
+                if (profileComparison > 0 ||
+                        (profileComparison == 0 && appointmentsArray[j].getDate().compareTo(appointmentsArray[j + 1].getDate()) > 0) ||
+                        (profileComparison == 0 && appointmentsArray[j].getDate().equals(appointmentsArray[j + 1].getDate()) &&
+                                appointmentsArray[j].getTimeslot().compareTo(appointmentsArray[j + 1].getTimeslot()) > 0)) {
+
+                    // Swap the appointments if out of order
+                    Appointment temp = appointmentsArray[j];
+                    appointmentsArray[j] = appointmentsArray[j + 1];
+                    appointmentsArray[j + 1] = temp;
+                }
+            }
+        }
+    }
+
+    /**
+     * PO - List of office appointments ordered by county/date/time.
+     * @param event JavaFx action.
+     */
+    @FXML
+    private void handleListOfficeVisits(ActionEvent event) {
+        if (appointmentList.isEmpty()) {
+            outputArea.appendText("Schedule calendar is empty.\n");
+            return;
+        }
+        sortByLocation();
+        outputArea.appendText("\n** List of office appointments ordered by county/date/time.**\n");
+        for (int i = 0; i < appointmentList.size(); i++) {
+            if (!(appointmentList.get(i) instanceof Imaging)) {
+                outputArea.appendText(appointmentList.get(i) + "\n");
+            }
+        }
+        outputArea.appendText("** end of list **\n");
+    }
+
+    /**
+     * PI - List of radiology appointments by county/date/time
+     * @param event JavaFx action.
+     */
+    @FXML
+    private void handleListImagingVisits(ActionEvent event) {
+        if (appointmentList.isEmpty()) {
+            outputArea.appendText("Schedule calendar is empty.\n");
+            return;
+        }
+        sortByLocation();
+        outputArea.appendText("\n** List of radiology appointments ordered by county/date/time.**n");
+        for (int i = 0; i < appointmentList.size(); i++) {
+            if ((appointmentList.get(i) instanceof Imaging)) {
+                outputArea.appendText(appointmentList.get(i) + "\n");
+            }
+        }
+        outputArea.appendText("** end of list **\n");
+    }
+
+    /**
+     * PI PO In-place bubble sort method to order appointments by county (location), then date, and then timeslot.
+     */
+    private void sortByLocation() {
+        boolean swapped;
+        for (int i = 0; i < appointmentList.size() - 1; i++) {
+            swapped = false;
+            for (int j = 0; j < appointmentList.size() - i - 1; j++) {
+                if (shouldSwapByLocation(j)) {
+                    swapAppointments(j);
+                    swapped = true;
+                }
+            }
+            if (!swapped) {
+                break; // List is already sorted
+            }
+        }
+    }
+
+    /**
+     * Helper method to determine if two appointments should be swapped by location, date, timeslot, and provider name.
+     *
+     * @param index The current index of the appointment.
+     * @return True if the appointments should be swapped, false otherwise.
+     */
+    private boolean shouldSwapByLocation(int index) {
+        Appointment currentAppointment = appointmentList.get(index);
+        Appointment nextAppointment = appointmentList.get(index + 1);
+
+        Provider currentProvider = (Provider) currentAppointment.getProvider();
+        Provider nextProvider = (Provider) nextAppointment.getProvider();
+        Location currentLocation = currentProvider.getLocation();
+        Location nextLocation = nextProvider.getLocation();
+
+        // Compare by county
+        int countyComparison = currentLocation.getCounty().compareTo(nextLocation.getCounty());
+        if (countyComparison > 0) {
+            return true;
+        } else if (countyComparison == 0) {
+            // Compare by date
+            int dateComparison = currentAppointment.getDate().compareTo(nextAppointment.getDate());
+            if (dateComparison > 0) {
+                return true;
+            } else if (dateComparison == 0) {
+                // Compare by timeslot
+                int timeslotComparison = currentAppointment.getTimeslot().compareTo(nextAppointment.getTimeslot());
+                if (timeslotComparison > 0) {
+                    return true;
+                } else if (timeslotComparison == 0) {
+                    // Compare by provider's first name
+                    int providerFirstNameComparison = currentProvider.getProfile().getFname().compareTo(nextProvider.getProfile().getFname());
+                    return providerFirstNameComparison > 0;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * PC - credit amount ordered by provider
+     * @param event JavaFx action.
+     */
+    @FXML
+    private void handlePatientStatement(ActionEvent event) {
+        Appointment[] appointments = convertAppointmentListToArray();
+        if (appointmentList.isEmpty()) {
+            outputArea.appendText("Schedule calendar is empty.");
+            return;
+        }
+
+        // Collect unique providers and their credit amounts
+        int providerCount = 0;
+        Provider[] uniqueProviders = new Provider[appointments.length];
+        double[] creditAmounts = new double[appointments.length];
+        providerCount = collectProviderCredits(appointments, uniqueProviders, creditAmounts, providerCount);
+
+        // Sort providers by last name, first name, and DOB
+        sortProviders(uniqueProviders, creditAmounts, providerCount);
+
+        // Print the sorted list of credit amounts
+        printSortedCreditAmounts(uniqueProviders, creditAmounts, providerCount);
+    }
+
+    /**
+     * PC Helper Method. Collects the unique providers and calculates their respective credit amounts.
+     *
+     * @param appointments    The list of appointments.
+     * @param uniqueProviders The array to hold unique providers.
+     * @param creditAmounts   The array to hold credit amounts for each provider.
+     * @param providerCount   The count of unique providers.
+     * @return The updated provider count.
+     */
+    private int collectProviderCredits(Appointment[] appointments, Provider[] uniqueProviders, double[] creditAmounts, int providerCount) {
+        for (int i = 0; i < appointments.length; i++) {
+            Provider provider = (Provider) appointments[i].getProvider();
+            double serviceCost = appointments[i].getServiceCost();
+            int index = findProviderIndex(uniqueProviders, provider, providerCount);
+
+            if (index == -1) {
+                uniqueProviders[providerCount] = provider;
+                creditAmounts[providerCount] = serviceCost;
+                providerCount++;
+            } else {
+                creditAmounts[index] += serviceCost;
+            }
+        }
+        return providerCount;
+    }
+
+    /**
+     * PC Helper Method. Finds the index of the provider in the uniqueProviders array.
+     *
+     * @param uniqueProviders The array of unique providers.
+     * @param provider        The provider to be searched.
+     * @param providerCount   The count of unique providers.
+     * @return The index of the provider if found, or -1 otherwise.
+     */
+    private int findProviderIndex(Provider[] uniqueProviders, Provider provider, int providerCount) {
+        for (int j = 0; j < providerCount; j++) {
+            if (uniqueProviders[j].equals(provider)) {
+                return j;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * PC Helper Method. Sorts the providers based on last name, first name, and date of birth.
+     *
+     * @param uniqueProviders The array of unique providers.
+     * @param creditAmounts   The array of credit amounts for each provider.
+     * @param providerCount   The count of unique providers.
+     */
+    private void sortProviders(Provider[] uniqueProviders, double[] creditAmounts, int providerCount) {
+        for (int i = 0; i < providerCount - 1; i++) {
+            for (int j = i + 1; j < providerCount; j++) {
+                Profile profile1 = uniqueProviders[i].getProfile();
+                Profile profile2 = uniqueProviders[j].getProfile();
+
+                int lastNameComparison = profile1.getLname().compareTo(profile2.getLname());
+                if (lastNameComparison > 0 ||
+                        (lastNameComparison == 0 && profile1.getFname().compareTo(profile2.getFname()) > 0) ||
+                        (lastNameComparison == 0 && profile1.getFname().compareTo(profile2.getFname()) == 0 && profile1.getDob().compareTo(profile2.getDob()) > 0)) {
+
+                    // Swap providers and credit amounts to keep them aligned
+                    swapProviders(uniqueProviders, creditAmounts, i, j);
+                }
+            }
+        }
+    }
+
+    /**
+     * PC Helper Method. Swaps the providers and their respective credit amounts.
+     *
+     * @param uniqueProviders The array of unique providers.
+     * @param creditAmounts   The array of credit amounts for each provider.
+     * @param i               The first index to be swapped.
+     * @param j               The second index to be swapped.
+     */
+    private void swapProviders(Provider[] uniqueProviders, double[] creditAmounts, int i, int j) {
+        Provider tempProvider = uniqueProviders[i];
+        uniqueProviders[i] = uniqueProviders[j];
+        uniqueProviders[j] = tempProvider;
+
+        double tempCredit = creditAmounts[i];
+        creditAmounts[i] = creditAmounts[j];
+        creditAmounts[j] = tempCredit;
+    }
+
+    /**
+     * PC Helper Method. Prints the sorted list of credit amounts for each provider.
+     *
+     * @param uniqueProviders The array of unique providers.
+     * @param creditAmounts   The array of credit amounts for each provider.
+     * @param providerCount   The count of unique providers.
+     */
+    private void printSortedCreditAmounts(Provider[] uniqueProviders, double[] creditAmounts, int providerCount) {
+        outputArea.appendText("\n** Credit amount ordered by provider. **\n");
+        for (int i = 0; i < providerCount; i++) {
+            outputArea.appendText("(" + (i + 1) + ") " +
+                    uniqueProviders[i].getProfile().getFname().toUpperCase() + " " +
+                    uniqueProviders[i].getProfile().getLname().toUpperCase() + " " +
+                    uniqueProviders[i].getProfile().getDob() + " [" +
+                    "credit amount: $" + String.format("%,.2f", creditAmounts[i]) + "]\n");
+        }
+        outputArea.appendText("** end of list **\n");
+    }
+
+    /**
+     * PS - Billing statement ordered by patient.
+     * @param event JavaFx action.
+     */
+    @FXML
+    private void handleProviderStatement(ActionEvent event) {
+        Appointment[] appointments = convertAppointmentListToArray();
+        if (appointmentList.isEmpty()) {
+            outputArea.appendText("Schedule calendar is empty.\n");
+            return;
+        }
+        int patientCount = 0;
+        Person[] uniquePatients = new Person[appointments.length];
+        double[] billingAmounts = new double[appointments.length];
+        patientCount = collectPatientBilling(appointments, uniquePatients, billingAmounts, patientCount);
+        sortPatients(uniquePatients, billingAmounts, patientCount);
+        printSortedBillingStatements(uniquePatients, billingAmounts, patientCount);
+        clearAppointmentList();
+    }
+
+    /**
+     * PS Helper Method. Collects unique patients and calculates their billing amounts.
+     *
+     * @param appointments    The list of appointments.
+     * @param uniquePatients  The array to hold unique patients.
+     * @param billingAmounts  The array to hold billing amounts for each patient.
+     * @param patientCount    The count of unique patients.
+     * @return The updated patient count.
+     */
+    private int collectPatientBilling(Appointment[] appointments, Person[] uniquePatients, double[] billingAmounts, int patientCount) {
+        for (int i = 0; i < appointments.length; i++) {
+            Person patient = appointments[i].getPatient();
+            double serviceCost = appointments[i].getServiceCost();
+            int index = findPatientIndex(uniquePatients, patient, patientCount);
+
+            if (index == -1) {
+                uniquePatients[patientCount] = patient;
+                billingAmounts[patientCount] = serviceCost;
+                patientCount++;
+            } else {
+                billingAmounts[index] += serviceCost;
+            }
+        }
+        return patientCount;
+    }
+
+    /**
+     * PS Helper Method. Finds the index of the patient in the uniquePatients array.
+     *
+     * @param uniquePatients The array of unique patients.
+     * @param patient        The patient to be searched.
+     * @param patientCount   The count of unique patients.
+     * @return The index of the patient if found, or -1 otherwise.
+     */
+    private int findPatientIndex(Person[] uniquePatients, Person patient, int patientCount) {
+        for (int j = 0; j < patientCount; j++) {
+            if (uniquePatients[j].equals(patient)) {
+                return j;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * PS Helper Method. Sorts the patients based on last name, first name, and date of birth.
+     *
+     * @param uniquePatients The array of unique patients.
+     * @param billingAmounts The array of billing amounts for each patient.
+     * @param patientCount   The count of unique patients.
+     */
+    private void sortPatients(Person[] uniquePatients, double[] billingAmounts, int patientCount) {
+        for (int i = 0; i < patientCount - 1; i++) {
+            for (int j = i + 1; j < patientCount; j++) {
+                Profile profileI = uniquePatients[i].getProfile();
+                Profile profileJ = uniquePatients[j].getProfile();
+
+                int lastNameComparison = profileI.getLname().compareTo(profileJ.getLname());
+                if (lastNameComparison > 0 ||
+                        (lastNameComparison == 0 && profileI.getFname().compareTo(profileJ.getFname()) > 0) ||
+                        (lastNameComparison == 0 && profileI.getFname().compareTo(profileJ.getFname()) == 0 &&
+                                profileI.getDob().compareTo(profileJ.getDob()) > 0)) {
+                    swapPatients(uniquePatients, billingAmounts, i, j);
+                }
+            }
+        }
+    }
+
+    /**
+     * PS Helper Method. Swaps the patients and their respective billing amounts.
+     *
+     * @param uniquePatients The array of unique patients.
+     * @param billingAmounts The array of billing amounts for each patient.
+     * @param i              The first index to be swapped.
+     * @param j              The second index to be swapped.
+     */
+    private void swapPatients(Person[] uniquePatients, double[] billingAmounts, int i, int j) {
+        Person tempPatient = uniquePatients[i];
+        uniquePatients[i] = uniquePatients[j];
+        uniquePatients[j] = tempPatient;
+
+        double tempBilling = billingAmounts[i];
+        billingAmounts[i] = billingAmounts[j];
+        billingAmounts[j] = tempBilling;
+    }
+
+    /**
+     * PS Helper Method. Prints the sorted billing statements for each patient.
+     *
+     * @param uniquePatients The array of unique patients.
+     * @param billingAmounts The array of billing amounts for each patient.
+     * @param patientCount   The count of unique patients.
+     */
+    private void printSortedBillingStatements(Person[] uniquePatients, double[] billingAmounts, int patientCount) {
+        DecimalFormat formatter = new DecimalFormat("#,##0.00");
+
+        outputArea.appendText("\n** Billing statement ordered by patient. **\n");
+        for (int i = 0; i < patientCount; i++) {
+            outputArea.appendText("(" + (i + 1) + ") " + uniquePatients[i].getProfile() +
+                    " [due: $" + formatter.format(billingAmounts[i]) + "]\n");
+        }
+        outputArea.appendText("** end of list **\n");
+    }
+
+    /**
+     * PS Helper Method. Clears appointment list after printing PS statement.
+     */
+    private void clearAppointmentList() {
+        // Iterate over the appointmentList and remove each appointment
+        while (appointmentList.size() > 0) {
+            Appointment appointment = appointmentList.get(0);  // Always get the first element
+            appointmentList.remove(appointment);  // Remove it by reference
+        }
+    }
+
+    /**
+     * Q - Quits the program
+     * @param event JavaFX action.
+     */
     @FXML
     private void handleExit(ActionEvent event) {
         Alert exitAlert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -862,30 +1418,5 @@ public class ClinicManagerController {
                 System.exit(0);
             }
         });
-    }
-
-    // Example to handle saving appointment data (if required)
-    @FXML
-    private void handleSaveAppointments(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Appointments");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
-        File saveFile = fileChooser.showSaveDialog(scheduleButton.getScene().getWindow());
-
-        if (saveFile != null) {
-            try {
-                // Assuming you have logic to retrieve scheduled appointments as a string
-                String appointmentData = retrieveScheduledAppointments();
-                Files.writeString(saveFile.toPath(), appointmentData);
-                outputArea.appendText("Appointments saved successfully.\n");
-            } catch (IOException e) {
-                outputArea.appendText("Failed to save appointments.\n");
-            }
-        }
-    }
-
-    // Mock method to retrieve scheduled appointments (replace with actual logic)
-    private String retrieveScheduledAppointments() {
-        return "Sample appointment data\n";
     }
 }
