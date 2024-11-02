@@ -59,12 +59,10 @@ public class ClinicManagerController {
         // Initialize locations for the clinic table
         locations = FXCollections.observableArrayList(Location.values());
         clinicTable.setItems(locations);
-
         // Setup columns for the clinic table
         locationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLocation()));
         countyColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCounty()));
         zipColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getZip()));
-
         // Set button actions
         loadProvidersButton.setOnAction(this::handleLoadProviders);
         scheduleButton.setOnAction(this::handleSchedule);
@@ -72,7 +70,7 @@ public class ClinicManagerController {
         rescheduleButton.setOnAction(this::handleReschedule);
         clearButton.setOnAction(this::handleClear);
         clearRescheduleButton.setOnAction(this::handleClearReschedule);
-
+        // Set up Radio Buttons
         visitTypeGroup = new ToggleGroup();
         officeVisitRadio.setToggleGroup(visitTypeGroup);
         imagingServiceRadio.setToggleGroup(visitTypeGroup);
@@ -80,12 +78,10 @@ public class ClinicManagerController {
             updateProviderCombo();
             updateVisitType();
         });
-
         // Initialize imaging types
         imagingTypes = FXCollections.observableArrayList(Radiology.values());
         imagingTypeCombo.setItems(imagingTypes);
         imagingTypeCombo.setVisible(false); // Initially hidden
-
         // Disable the provider dropdown initially
         providerCombo.setDisable(true);
     }
@@ -112,7 +108,6 @@ public class ClinicManagerController {
         fileChooser.setTitle("Open Provider File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
         File selectedFile = fileChooser.showOpenDialog(loadProvidersButton.getScene().getWindow());
-
         if (selectedFile != null) {
             loadProvidersFromFile(selectedFile);
             createTechnicianRotation();
@@ -146,13 +141,11 @@ public class ClinicManagerController {
     private void updateVisitType() {
         boolean isOfficeVisitSelected = officeVisitRadio.isSelected();
         boolean isImagingServiceSelected = imagingServiceRadio.isSelected();
-
         // Show NPI TextField for Office Visits
         npiLabel.setVisible(isOfficeVisitSelected);
         npiLabel.setManaged(isOfficeVisitSelected);
         npiTextField.setVisible(isOfficeVisitSelected);
         npiTextField.setManaged(isOfficeVisitSelected);
-
         // Show Imaging Type ComboBox for Imaging Services
         imagingTypeLabel.setVisible(isImagingServiceSelected);
         imagingTypeLabel.setManaged(isImagingServiceSelected);
@@ -172,17 +165,14 @@ public class ClinicManagerController {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine().trim();
                 if (line.isEmpty()) continue;
-
                 StringTokenizer tokenizer = new StringTokenizer(line, " ");
                 char providerType = tokenizer.nextToken().charAt(0);
-
                 String firstName = tokenizer.nextToken();
                 String lastName = tokenizer.nextToken();
                 String dobString = tokenizer.nextToken();
                 Date dob = dateFromToken(dobString);
                 String locationstring = tokenizer.nextToken();
                 Location providerLocation = Location.valueOf(locationstring.toUpperCase());
-
                 if (providerType == 'D') {
                     String specialtyString = tokenizer.nextToken();
                     Specialty specialty = Specialty.valueOf(specialtyString.toUpperCase());
@@ -268,7 +258,6 @@ public class ClinicManagerController {
             for (int j = 0; j < providersArray.length - i - 1; j++) {
                 String lastName1 = providersArray[j].getProfile().getLname();
                 String lastName2 = providersArray[j + 1].getProfile().getLname();
-
                 if (lastName1.compareTo(lastName2) > 0) {
                     Provider temp = providersArray[j];
                     providersArray[j] = providersArray[j + 1];
@@ -378,28 +367,21 @@ public class ClinicManagerController {
      */
     private Technician findAvailableTechnician(Date date, Timeslot timeslot, Radiology room) {
         int initialIndex = currentTechnicianIndex;
-
         do {
             Technician tech = technicianList.get(currentTechnicianIndex);
-
             // Gather all existing appointments for this technician
             Appointment[] technicianAppointments = getTechnicianAppointments(tech);
-
             // Check technician availability for the date and timeslot across all rooms, not just the requested one
             if (isTechnicianAvailableForTimeslot(tech, date, timeslot, technicianAppointments) &&
                     isRoomAvailable(date, timeslot, room, tech.getLocation())) {
-
                 // Technician is available, update the index for the next rotation
                 Technician availableTechnician = tech;
                 currentTechnicianIndex = (currentTechnicianIndex + 1) % technicianList.size();
                 return availableTechnician;  // Return the first available technician
             }
-
             // Move to the next technician without updating the global currentTechnicianIndex
             currentTechnicianIndex = (currentTechnicianIndex + 1) % technicianList.size();
-
         } while (currentTechnicianIndex != initialIndex);
-
         // No available technician found
         return null;
     }
@@ -412,11 +394,9 @@ public class ClinicManagerController {
             Appointment appointment = appointmentList.get(i);
             if (appointment instanceof Imaging) {
                 Imaging imagingAppointment = (Imaging) appointment;
-
                 // Make sure the provider is of type Technician
                 if (imagingAppointment.getProvider() instanceof Technician) {
                     Technician technician = (Technician) imagingAppointment.getProvider();
-
                     // Check if the date, timeslot, room type, and location match
                     if (imagingAppointment.getDate().equals(date) &&
                             imagingAppointment.getTimeslot().equals(timeslot) &&
@@ -442,7 +422,6 @@ public class ClinicManagerController {
         if (appointments == null) {
             return true; // Technician is available if there are no appointments
         }
-
         // Iterate through each appointment to check if the technician is already booked at this date and timeslot
         for (int i = 0; i < appointments.length; i++) {
             Appointment appointment = appointments[i];
@@ -454,7 +433,6 @@ public class ClinicManagerController {
                 return false;
             }
         }
-
         return true; // Technician is available for the timeslot
     }
 
@@ -610,36 +588,26 @@ public class ClinicManagerController {
      */
     @FXML
     private void handleSchedule(ActionEvent event) {
-        // Collect input data
         Date apptDate = convertLocalDateToDate(this.appointmentDate.getValue());
         String patientFirstName = this.patientFirstName.getText();
         String patientLastName = this.patientLastName.getText();
         Date dob = convertLocalDateToDate(dobPicker.getValue());
         String providerString = providerCombo.getValue();
         Timeslot timeslot = timeslotCombo.getValue();
-
-        // Make sure all inputs were given
         if (apptDate == null || patientFirstName.isEmpty() || patientLastName.isEmpty() || dob == null
                 || providerString.isEmpty() || timeslot == null) {
             outputArea.appendText("Please fill all the required fields.\n");
             return;
         }
-
         Profile patientProfile = new Profile(patientFirstName,patientLastName, dob);
-
-        // Check which radio button is selected and handle accordingly
         if (imagingServiceRadio.isSelected()) {
-            // Check if imaging type is selected
-            Radiology imagingType = imagingTypeCombo.getValue(); // Get selected imaging type
+            Radiology imagingType = imagingTypeCombo.getValue();
             if (imagingType == null) {
                 outputArea.appendText("Please select the type of imaging appointment.\n");
                 return;
             }
-
-            // Call scheduleImagingAppointment method
             scheduleImagingAppointment(apptDate, patientProfile, imagingType, timeslot);
             handleClear(event);
-
         } else if (officeVisitRadio.isSelected()) {
             String npi = npiTextField.getText();
             Provider providerByNPI = findProviderByNPI(npi);
@@ -647,13 +615,11 @@ public class ClinicManagerController {
                 outputArea.appendText(npi + " - provider doesn't exist.\n");
                 return;
             }
-            // Call scheduleDoctorAppointment method
             scheduleDoctorAppointment(apptDate, patientProfile, providerString, timeslot, providerByNPI);
             handleClear(event);
         } else {
             outputArea.appendText("Please select a type of visit.\n");
         }
-
     }
 
     /**
@@ -662,15 +628,12 @@ public class ClinicManagerController {
      */
     @FXML
     private void handleCancel(ActionEvent event) {
-        // Collect input data
         Date apptDate = convertLocalDateToDate(this.appointmentDate.getValue());
         String patientFirstName = this.patientFirstName.getText();
         String patientLastName = this.patientLastName.getText();
         Date dob = convertLocalDateToDate(dobPicker.getValue());
         String providerString = providerCombo.getValue();
         Timeslot timeslot = timeslotCombo.getValue();
-
-        // Make sure all inputs were given
         if (apptDate == null || patientFirstName.isEmpty() || patientLastName.isEmpty() || dob == null || timeslot == null) {
             outputArea.appendText("Please fill all the required fields.\n");
             return;
@@ -697,52 +660,54 @@ public class ClinicManagerController {
     }
 
     /**
-     * R - Reschedule Appointment.
-     * @param event JavaFx action.
+     * R Helper Methdod. Checks if there is an appointment that can be rescheduled.
+     * @param oldDate old Date
+     * @param oldAppointmentTimeslot old appointment time
+     * @param patientProfile profile of the patient
+     * @return appointment that will be rescheduled, null otherwise.
      */
-    @FXML
-    private void handleReschedule(ActionEvent event) {
-        // Get the new appointment details from the UI components
-        String firstName = firstNameField.getText();
-        String lastName = lastNameField.getText();
-        Date oldDate = convertLocalDateToDate(newDatePicker.getValue());
-        Date dob = convertLocalDateToDate(dobPickerReschedule.getValue());
-        Timeslot newAppointmentTimeslot = existingTimeComboBox.getValue();
-        Timeslot oldAppointmentTimeslot = newTimeComboBox.getValue();
-
-        // Validate inputs
-        if (firstName.isEmpty() || lastName.isEmpty() || newAppointmentTimeslot == null ||
-                oldAppointmentTimeslot == null || oldDate == null || dob == null) {
-            statusLabel.setText("Please fill in all fields.");
-            return;
-        }
-
-        Profile patientProfile = new Profile (firstName, lastName, dob);
-        Appointment appointmentToReschedule = null;
+    private Appointment findAppointmentToReschedule(Date oldDate, Timeslot oldAppointmentTimeslot, Profile patientProfile) {
         for (int i = 0; i < appointmentList.size(); i++) {
             Appointment currentAppointment = appointmentList.get(i);
             if (currentAppointment.getDate().equals(oldDate) &&
                     currentAppointment.getTimeslot().equals(oldAppointmentTimeslot) &&
                     currentAppointment.getPatient().getProfile().equals(patientProfile)) {
-                appointmentToReschedule = currentAppointment;
-                break;
+                return currentAppointment; // Return the appointment directly
             }
         }
-        if (appointmentToReschedule == null) {
-            outputArea.appendText(oldDate + " " + oldAppointmentTimeslot + " " +
-                    patientProfile + " does not exist.\n");
-            return;
-        }
+        // If no matching appointment was found, log a message and return null
+        outputArea.appendText(oldDate + " " + oldAppointmentTimeslot + " " +
+                patientProfile + " does not exist.\n");
+        return null;
+    }
+
+    /**
+     * R Helper Method. Checks if the patient has an appointment at requested time already.
+     * @param oldDate Date of appointment
+     * @param newAppointmentTimeslot Requested time of appointment
+     * @param patientProfile Profile of patient
+     * @return false if they have an appointment at requested time, false otherwise.
+     */
+    private boolean hasAppointmentAtThatTime(Date oldDate, Timeslot newAppointmentTimeslot, Profile patientProfile) {
         for (int i = 0; i < appointmentList.size(); i++) {
             Appointment currentAppointment = appointmentList.get(i);
             if (currentAppointment.getDate().equals(oldDate) &&
                     currentAppointment.getTimeslot().equals(newAppointmentTimeslot) &&
                     currentAppointment.getPatient().getProfile().equals(patientProfile)) {
-                outputArea.appendText(patientProfile + " has an existing appointment at " +
-                        oldDate + " " + newAppointmentTimeslot + "\n");
-                return;
+                return false;
             }
         }
+        return true;
+    }
+
+    /**
+     * R Helper Method. Checks if a doctor is available at the requested date and time.
+     * @param oldDate requested Date
+     * @param newAppointmentTimeslot requested Time
+     * @param patientProfile Patient
+     * @return true is available, false otherwise.
+     */
+    private boolean checkIfDoctorAvailableAtNewTime(Date oldDate, Timeslot newAppointmentTimeslot, Profile patientProfile){
         boolean newTimeAvailable = true;
         for (int i = 0; i < appointmentList.size(); i++) {
             Appointment currentAppointment = appointmentList.get(i);
@@ -750,12 +715,44 @@ public class ClinicManagerController {
                     currentAppointment.getTimeslot().equals(newAppointmentTimeslot) &&
                     !currentAppointment.getPatient().getProfile().equals(patientProfile)) {
                 newTimeAvailable = false;
-                outputArea.appendText("The new timeslot " + oldDate + " " + newAppointmentTimeslot +
-                        " is already booked by another patient.\n");
-                return;
+                return newTimeAvailable;
             }
         }
-        if (newTimeAvailable) {
+        return newTimeAvailable;
+    }
+
+    /**
+     * R - Reschedule Appointment.
+     * @param event JavaFx action.
+     */
+    @FXML
+    private void handleReschedule(ActionEvent event) {
+        String firstName = firstNameField.getText();
+        String lastName = lastNameField.getText();
+        Date oldDate = convertLocalDateToDate(newDatePicker.getValue());
+        Date dob = convertLocalDateToDate(dobPickerReschedule.getValue());
+        Timeslot newAppointmentTimeslot = existingTimeComboBox.getValue();
+        Timeslot oldAppointmentTimeslot = newTimeComboBox.getValue();
+        if (firstName.isEmpty() || lastName.isEmpty() || newAppointmentTimeslot == null ||
+                oldAppointmentTimeslot == null || oldDate == null || dob == null) {
+            statusLabel.setText("Please fill in all fields.");
+            return;
+        }
+        Profile patientProfile = new Profile (firstName, lastName, dob);
+        Appointment appointmentToReschedule = findAppointmentToReschedule(oldDate, oldAppointmentTimeslot, patientProfile);
+        if (appointmentToReschedule == null) { return; }
+        boolean hasAppointmentatTime = hasAppointmentAtThatTime(oldDate, newAppointmentTimeslot, patientProfile);
+        if (!hasAppointmentatTime) {
+            outputArea.appendText(patientProfile + " has an existing appointment at " +
+                    oldDate + " " + newAppointmentTimeslot + "\n");
+            return;
+        }
+        boolean newTimeAvailable = checkIfDoctorAvailableAtNewTime(oldDate, newAppointmentTimeslot, patientProfile);
+        if (!newTimeAvailable) {
+            outputArea.appendText("The new timeslot " + oldDate + " " + newAppointmentTimeslot +
+                    " is already booked by another patient.\n");
+            return;
+        } else {
             appointmentToReschedule.setTimeslot(newAppointmentTimeslot);
             String providerInfo = appointmentToReschedule.getProvider().toString();
             outputArea.appendText("Rescheduled to " + oldDate + " " +
@@ -763,12 +760,8 @@ public class ClinicManagerController {
                     patientProfile + " " +
                     providerInfo + "\n");
         }
-
-        // DO WE NEED BELOW LINES? \\
         // Update status label
         statusLabel.setText("Appointment rescheduled successfully.");
-
-        // Clear the input fields after rescheduling
         handleClearReschedule(event);
     }
 
@@ -940,37 +933,29 @@ public class ClinicManagerController {
     private boolean shouldSwapByLocationLength(int index) {
         Appointment currentAppointment = appointmentList.get(index);
         Appointment nextAppointment = appointmentList.get(index + 1);
-
         Provider currentProvider = (Provider) currentAppointment.getProvider();
         Provider nextProvider = (Provider) nextAppointment.getProvider();
         Location currentLocation = currentProvider.getLocation();
         Location nextLocation = nextProvider.getLocation();
-
-        // Compare by county
         int countyComparison = currentLocation.getCounty().compareTo(nextLocation.getCounty());
         if (countyComparison > 0) {
             return true;
         } else if (countyComparison == 0) {
-            // Compare by date
             int dateComparison = currentAppointment.getDate().compareTo(nextAppointment.getDate());
             if (dateComparison > 0) {
                 return true;
             } else if (dateComparison == 0) {
-                // Compare by timeslot
                 int timeslotComparison = currentAppointment.getTimeslot().compareTo(nextAppointment.getTimeslot());
                 if (timeslotComparison > 0) {
                     return true;
                 } else if (timeslotComparison == 0) {
-                    // Compare by patient's full name length
                     String currentFullName = currentAppointment.getPatient().getProfile().getFname() + " " +
                             currentAppointment.getPatient().getProfile().getLname();
                     String nextFullName = nextAppointment.getPatient().getProfile().getFname() + " " +
                             nextAppointment.getPatient().getProfile().getLname();
-
                     if (currentFullName.length() > nextFullName.length()) {
                         return true;
                     } else if (currentFullName.length() == nextFullName.length()) {
-                        // Compare by patient's full name lexicographically if lengths are equal
                         return currentFullName.compareTo(nextFullName) > 0;
                     }
                 }
@@ -1018,20 +1003,15 @@ public class ClinicManagerController {
      * @param appointmentsArray The array of appointments to be sorted.
      */
     private void sortAppointmentsByPatient(Appointment[] appointmentsArray) {
-        // Implementing a simple bubble sort to meet project restrictions
         for (int i = 0; i < appointmentsArray.length - 1; i++) {
             for (int j = 0; j < appointmentsArray.length - i - 1; j++) {
-                // Compare by patient profile (last name, first name)
                 Profile profile1 = appointmentsArray[j].getPatient().getProfile();
                 Profile profile2 = appointmentsArray[j + 1].getPatient().getProfile();
                 int profileComparison = profile1.compareTo(profile2);
-
                 if (profileComparison > 0 ||
                         (profileComparison == 0 && appointmentsArray[j].getDate().compareTo(appointmentsArray[j + 1].getDate()) > 0) ||
                         (profileComparison == 0 && appointmentsArray[j].getDate().equals(appointmentsArray[j + 1].getDate()) &&
                                 appointmentsArray[j].getTimeslot().compareTo(appointmentsArray[j + 1].getTimeslot()) > 0)) {
-
-                    // Swap the appointments if out of order
                     Appointment temp = appointmentsArray[j];
                     appointmentsArray[j] = appointmentsArray[j + 1];
                     appointmentsArray[j + 1] = temp;
@@ -1094,7 +1074,7 @@ public class ClinicManagerController {
                 }
             }
             if (!swapped) {
-                break; // List is already sorted
+                break;
             }
         }
     }
@@ -1108,28 +1088,22 @@ public class ClinicManagerController {
     private boolean shouldSwapByLocation(int index) {
         Appointment currentAppointment = appointmentList.get(index);
         Appointment nextAppointment = appointmentList.get(index + 1);
-
         Provider currentProvider = (Provider) currentAppointment.getProvider();
         Provider nextProvider = (Provider) nextAppointment.getProvider();
         Location currentLocation = currentProvider.getLocation();
         Location nextLocation = nextProvider.getLocation();
-
-        // Compare by county
         int countyComparison = currentLocation.getCounty().compareTo(nextLocation.getCounty());
         if (countyComparison > 0) {
             return true;
         } else if (countyComparison == 0) {
-            // Compare by date
             int dateComparison = currentAppointment.getDate().compareTo(nextAppointment.getDate());
             if (dateComparison > 0) {
                 return true;
             } else if (dateComparison == 0) {
-                // Compare by timeslot
                 int timeslotComparison = currentAppointment.getTimeslot().compareTo(nextAppointment.getTimeslot());
                 if (timeslotComparison > 0) {
                     return true;
                 } else if (timeslotComparison == 0) {
-                    // Compare by provider's first name
                     int providerFirstNameComparison = currentProvider.getProfile().getFname().compareTo(nextProvider.getProfile().getFname());
                     return providerFirstNameComparison > 0;
                 }
@@ -1149,17 +1123,11 @@ public class ClinicManagerController {
             outputArea.appendText("Schedule calendar is empty.");
             return;
         }
-
-        // Collect unique providers and their credit amounts
         int providerCount = 0;
         Provider[] uniqueProviders = new Provider[appointments.length];
         double[] creditAmounts = new double[appointments.length];
         providerCount = collectProviderCredits(appointments, uniqueProviders, creditAmounts, providerCount);
-
-        // Sort providers by last name, first name, and DOB
         sortProviders(uniqueProviders, creditAmounts, providerCount);
-
-        // Print the sorted list of credit amounts
         printSortedCreditAmounts(uniqueProviders, creditAmounts, providerCount);
     }
 
@@ -1177,7 +1145,6 @@ public class ClinicManagerController {
             Provider provider = (Provider) appointments[i].getProvider();
             double serviceCost = appointments[i].getServiceCost();
             int index = findProviderIndex(uniqueProviders, provider, providerCount);
-
             if (index == -1) {
                 uniqueProviders[providerCount] = provider;
                 creditAmounts[providerCount] = serviceCost;
@@ -1218,13 +1185,10 @@ public class ClinicManagerController {
             for (int j = i + 1; j < providerCount; j++) {
                 Profile profile1 = uniqueProviders[i].getProfile();
                 Profile profile2 = uniqueProviders[j].getProfile();
-
                 int lastNameComparison = profile1.getLname().compareTo(profile2.getLname());
                 if (lastNameComparison > 0 ||
                         (lastNameComparison == 0 && profile1.getFname().compareTo(profile2.getFname()) > 0) ||
                         (lastNameComparison == 0 && profile1.getFname().compareTo(profile2.getFname()) == 0 && profile1.getDob().compareTo(profile2.getDob()) > 0)) {
-
-                    // Swap providers and credit amounts to keep them aligned
                     swapProviders(uniqueProviders, creditAmounts, i, j);
                 }
             }
@@ -1243,7 +1207,6 @@ public class ClinicManagerController {
         Provider tempProvider = uniqueProviders[i];
         uniqueProviders[i] = uniqueProviders[j];
         uniqueProviders[j] = tempProvider;
-
         double tempCredit = creditAmounts[i];
         creditAmounts[i] = creditAmounts[j];
         creditAmounts[j] = tempCredit;
@@ -1302,7 +1265,6 @@ public class ClinicManagerController {
             Person patient = appointments[i].getPatient();
             double serviceCost = appointments[i].getServiceCost();
             int index = findPatientIndex(uniquePatients, patient, patientCount);
-
             if (index == -1) {
                 uniquePatients[patientCount] = patient;
                 billingAmounts[patientCount] = serviceCost;
@@ -1343,7 +1305,6 @@ public class ClinicManagerController {
             for (int j = i + 1; j < patientCount; j++) {
                 Profile profileI = uniquePatients[i].getProfile();
                 Profile profileJ = uniquePatients[j].getProfile();
-
                 int lastNameComparison = profileI.getLname().compareTo(profileJ.getLname());
                 if (lastNameComparison > 0 ||
                         (lastNameComparison == 0 && profileI.getFname().compareTo(profileJ.getFname()) > 0) ||
@@ -1367,7 +1328,6 @@ public class ClinicManagerController {
         Person tempPatient = uniquePatients[i];
         uniquePatients[i] = uniquePatients[j];
         uniquePatients[j] = tempPatient;
-
         double tempBilling = billingAmounts[i];
         billingAmounts[i] = billingAmounts[j];
         billingAmounts[j] = tempBilling;
@@ -1382,7 +1342,6 @@ public class ClinicManagerController {
      */
     private void printSortedBillingStatements(Person[] uniquePatients, double[] billingAmounts, int patientCount) {
         DecimalFormat formatter = new DecimalFormat("#,##0.00");
-
         outputArea.appendText("\n** Billing statement ordered by patient. **\n");
         for (int i = 0; i < patientCount; i++) {
             outputArea.appendText("(" + (i + 1) + ") " + uniquePatients[i].getProfile() +
@@ -1395,10 +1354,9 @@ public class ClinicManagerController {
      * PS Helper Method. Clears appointment list after printing PS statement.
      */
     private void clearAppointmentList() {
-        // Iterate over the appointmentList and remove each appointment
         while (appointmentList.size() > 0) {
-            Appointment appointment = appointmentList.get(0);  // Always get the first element
-            appointmentList.remove(appointment);  // Remove it by reference
+            Appointment appointment = appointmentList.get(0);
+            appointmentList.remove(appointment);
         }
     }
 
@@ -1412,7 +1370,6 @@ public class ClinicManagerController {
         exitAlert.setTitle("Exit");
         exitAlert.setHeaderText("Are you sure you want to exit?");
         exitAlert.setContentText("Unsaved changes will be lost.");
-
         exitAlert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 System.exit(0);

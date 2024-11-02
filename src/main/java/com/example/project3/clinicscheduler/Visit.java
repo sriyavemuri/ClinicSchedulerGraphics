@@ -51,18 +51,4 @@ public class Visit {
     public void setNext(Visit next) {
         this.next = next;
     }
-
-    /**
-     * Testbed main() to test the methods within this class alone.
-     * @param args command line arguments.
-     */
-//    public static void main(String[] args) {
-//        // Test case setup
-//        Date date1 = new Date(2024, 7, 13);
-//        Date DOB1 = new Date(2005, 1, 24);
-//        Profile nehaVemuri = new Profile("Neha", "Vemuri", DOB1);
-//
-//        // Create appointments
-//        Appointment nehaAppt = new Appointment(date1, Timeslot.SLOT1, nehaVemuri, Provider.PATEL);
-//    }
 }

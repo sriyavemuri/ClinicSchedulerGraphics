@@ -4,7 +4,7 @@ import com.example.project3.util.Date;
 /**
  * Imaging class. Represents an imaging appointment that extends the Appointment class.
  * It includes a Radiology room (X-ray, Ultrasound, CAT scan).
- * Author: Sriya Vemuri, Zeel Patel
+ * @author Sriya Vemuri, Zeel Patel
  */
 public class Imaging extends Appointment {
     private Radiology room;

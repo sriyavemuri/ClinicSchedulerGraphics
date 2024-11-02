@@ -63,19 +63,4 @@ public class Timeslot implements Comparable<Timeslot> {
         Timeslot other = (Timeslot) obj;
         return this.hour == other.hour && this.minute == other.minute;
     }
-
-    /**
-     * Testbed main() to test code just specifically within this class.
-     *
-     * @param args Command line arguments.
-     */
-    public static void main(String[] args) {
-        Timeslot slot1 = new Timeslot(9, 0); // 9:00 AM
-        Timeslot slot2 = new Timeslot(11, 30); // 11:30 AM
-        Timeslot slot3 = new Timeslot(14, 0); // 2:00 PM
-
-        System.out.println(slot1); // Expected: 09:00 AM
-        System.out.println(slot2); // Expected: 11:30 AM
-        System.out.println(slot3); // Expected: 02:00 PM
-    }
 }

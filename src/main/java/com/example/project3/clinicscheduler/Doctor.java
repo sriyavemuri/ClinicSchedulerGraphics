@@ -4,7 +4,7 @@ import com.example.project3.util.Date;
 
 /**
  * Represents a Doctor who is a provider with a specialty and NPI.
- * Author: Zeel Patel, Sriya Vemuri
+ * @author Zeel Patel, Sriya Vemuri
  */
 public class Doctor extends Provider {
     private Specialty specialty; // Encapsulated specialty
@@ -43,9 +43,12 @@ public class Doctor extends Provider {
         }
     }
 
+    /**
+     * Gets the cost based on a doctor's specialty.
+     * @return service cost as a double
+     */
     @Override
     public double getServiceCost() {
-        // Return service cost based on the doctor's specialty
         switch (specialty) {
             case FAMILY:
                 return 100;

@@ -129,7 +129,6 @@ public class Appointment implements Comparable<Appointment> {
         return date.toString() + " " + timeslot.toString() + " " + patient.getProfile().toString() + " " + provider.toString();
     }
 
-
     /**
      * Compare two Appointment objects based on their "key" value.
      * @param appointment the appointment object to be compared.
@@ -154,6 +153,10 @@ public class Appointment implements Comparable<Appointment> {
         return this.patient.getProfile().compareTo(appointment.patient.getProfile());
     }
 
+    /**
+     * Obtains the service cost of the provider for the appointment
+     * @return service cost as a double
+     */
     public double getServiceCost() {
         if (provider instanceof Doctor) {
             Doctor doctor = (Doctor) provider;
@@ -165,28 +168,28 @@ public class Appointment implements Comparable<Appointment> {
         return 0.0;  // If provider type is neither Doctor nor Technician.
     }
 
-    /**
-     * Testbed main() to test code just specifically within this class.
-     * @param args command line arguments.
-     */
-    public static void main(String[] args) {
-        Date date1 = new Date(2024, 7, 13);
-        Date date2 = new Date(2024, 12, 13);
-        Date date3 = new Date(2024, 12, 2);
-
-        Profile nehaProfile = new Profile("Neha", "Vemuri", new Date(2005, 1, 24));
-        Profile yashProfile = new Profile("Yash", "Krishnan", new Date(2003, 1, 29));
-
-        Patient nehaVemuri = new Patient(nehaProfile, null);
-        Patient yashKrishnan = new Patient(yashProfile, null);
-
-        Provider drPatel = new Doctor(new Profile("John", "Patel", new Date(1975, 5, 20)), Location.EDISON, Specialty.FAMILY, "123456789");
-        Provider drLim = new Doctor(new Profile("Rachael", "Lim", new Date(1980, 4, 10)), Location.BRIDGEWATER, Specialty.PEDIATRICIAN, "987654321");
-
-        Appointment appt1 = new Appointment(date1, new Timeslot(9, 0), nehaVemuri, drPatel);
-        Appointment appt2 = new Appointment(date2, new Timeslot(10, 0), yashKrishnan, drLim);
-
-        System.out.println("Appointment 1: " + appt1);
-        System.out.println("Appointment 2: " + appt2);
-    }
+//    /**
+//     * Testbed main() to test code just specifically within this class.
+//     * @param args command line arguments.
+//     */
+//    public static void main(String[] args) {
+//        Date date1 = new Date(2024, 7, 13);
+//        Date date2 = new Date(2024, 12, 13);
+//        Date date3 = new Date(2024, 12, 2);
+//
+//        Profile nehaProfile = new Profile("Neha", "Vemuri", new Date(2005, 1, 24));
+//        Profile yashProfile = new Profile("Yash", "Krishnan", new Date(2003, 1, 29));
+//
+//        Patient nehaVemuri = new Patient(nehaProfile, null);
+//        Patient yashKrishnan = new Patient(yashProfile, null);
+//
+//        Provider drPatel = new Doctor(new Profile("John", "Patel", new Date(1975, 5, 20)), Location.EDISON, Specialty.FAMILY, "123456789");
+//        Provider drLim = new Doctor(new Profile("Rachael", "Lim", new Date(1980, 4, 10)), Location.BRIDGEWATER, Specialty.PEDIATRICIAN, "987654321");
+//
+//        Appointment appt1 = new Appointment(date1, new Timeslot(9, 0), nehaVemuri, drPatel);
+//        Appointment appt2 = new Appointment(date2, new Timeslot(10, 0), yashKrishnan, drLim);
+//
+//        System.out.println("Appointment 1: " + appt1);
+//        System.out.println("Appointment 2: " + appt2);
+//    }
 }

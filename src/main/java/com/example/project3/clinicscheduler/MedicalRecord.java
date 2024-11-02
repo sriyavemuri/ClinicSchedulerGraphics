@@ -100,39 +100,4 @@ public class MedicalRecord {
         add(newPatient); // adds to the medical record
         return newPatient;
     }
-
-    /**
-     * Testbed main() to test the methods in this class.
-     * @param args command line arguments
-     */
-    public static void main(String[] args) {
-        MedicalRecord record = new MedicalRecord();
-
-        Patient p1 = new Patient(new Profile("Kernik", "Dave", new Date(2005, 4, 15)), null);
-        Patient p2 = new Patient(new Profile("Sahil", "Sharma", new Date(2003, 7, 23)), null);
-        Patient p3 = new Patient(new Profile("Rushi", "Patel", new Date(2001, 12, 9)), null);
-        Patient p4 = new Patient(new Profile("Aryan", "Saxena", new Date(1980, 3, 18)), null);
-
-        // Add patients to the record
-        record.add(p1);
-        record.add(p2);
-        record.add(p3);
-        record.add(p4);
-
-        // Print all patients
-        System.out.println("All patients in the record:");
-        record.printAllPatients();
-
-        // Check if a patient exists
-        System.out.println("Contains Kernik Dave: " + record.contains(p2));
-
-        // Get a patient by index
-        System.out.println("Patient at index 1: " + record.getPatient(1));
-
-        // Adding more patients to test array resizing
-        Patient p5 = new Patient(new Profile("Sanjana", "Suresh", new Date(1995, 5, 30)), null);
-        record.add(p5);
-        System.out.println("Added another patient, current size: " + record.getSize());
-        System.out.println("Patient at index 4: " + record.getPatient(4));
-    }
 }

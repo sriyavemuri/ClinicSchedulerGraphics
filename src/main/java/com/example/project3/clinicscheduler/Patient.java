@@ -1,5 +1,4 @@
 package com.example.project3.clinicscheduler;
-import com.example.project3.util.Date;
 
 /**
  * Maintains a place to store a patient's profile, a list of there visits,
@@ -115,53 +114,4 @@ public class Patient extends Person {
     public String toString() {
         return "Patient: " + profile.getFname() + " " + profile.getLname();
     }
-
-//    /**
-//     * Compares two patient objects based on their profile.
-//     *
-//     * @param patient the patient to be compared.
-//     * @return an integer value indicating the order of comparison
-//     */
-//    @Override
-//    public int compareTo(Patient patient) {
-//        return this.profile.compareTo(patient.profile); // Assuming Profile class implements Comparable
-//    }
-
-    /**
-     * Testbed main() to test the methods within this class alone.
-     * @param args command line arguments.
-     */
-//    public static void main(String[] args) {
-//        Date dob1 = new Date(1989, 12, 13);
-//        Date dob2 = new Date(1990, 5, 10);
-//        Profile profile1 = new Profile("Lalain", "Javaid", dob1);
-//        Profile profile2 = new Profile("Parshva", "Mehta", dob2);
-//
-//        // Create Appointments for the visits
-//        Appointment appt1 = new Appointment(new Date(2024, 7, 13), Timeslot.SLOT1, profile1, Provider.PATEL);
-//        Appointment appt2 = new Appointment(new Date(2024, 7, 14), Timeslot.SLOT2, profile2, Provider.TAYLOR);
-//
-//        // Create Visits with the appointments
-//        Visit visit1 = new Visit(appt1, null);
-//        Visit visit2 = new Visit(appt2, null);
-//
-//        // Create Patients with profiles and their first visit
-//        Patient patient1 = new Patient(profile1, visit1);
-//        Patient patient2 = new Patient(profile2, visit2);
-//
-//        // Test cases
-//        System.out.println("Charge for patient1: " + patient1.charge()); // This will calculate based on the single visit added in the constructor
-//        System.out.println("Charge for patient2: " + patient2.charge());
-//
-//        // Edge Case: Patient with no visits (creating a patient with a null visit)
-//        Patient patient3 = new Patient(new Profile("Rohit", "Boga", new Date(1992, 1, 1)), null);
-//        System.out.println("Charge for patient3 (no visits): " + patient3.charge()); // Expected: 0
-//
-//        // Edge Case: Equal patients (since both have the same profile)
-//        Patient patient4 = new Patient(profile1, visit1);
-//        System.out.println("patient1 equals patient4: " + patient1.equals(patient4)); // Expected: true
-//
-//        // Edge Case: Compare patients based on profiles
-//        System.out.println("Comparing patient1 and patient2: " + patient1.compareTo(patient2)); // Expected: < 0 based on profile comparison
-//    }
 }

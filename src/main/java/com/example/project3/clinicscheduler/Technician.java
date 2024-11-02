@@ -31,12 +31,22 @@ public class Technician extends Provider {
         return ratePerVisit; // Return the technician's specific rate
     }
 
+    /**
+     * Gets the rate per visit as a double for a technician.
+     */
     @Override
     public double getServiceCost() {
         // Return the rate per visit as the service cost for the technician
         return ratePerVisit;
     }
 
+    /**
+     * Checks if a Technician is available
+     * @param date        The date to check for availability.
+     * @param timeslot    The timeslot to check for availability.
+     * @param appointments Array of existing appointments.
+     * @return true if available, false otherwise.
+     */
     public boolean isAvailable(Date date, Timeslot timeslot, Appointment[] appointments) {
         if (appointments == null) {
             return true; // Technician is available if there are no appointments
@@ -53,10 +63,8 @@ public class Technician extends Provider {
         return true; // Technician is available
     }
 
-
     /**
      * Returns a string representation of the technician object.
-     *
      * @return Technician's full name, location, and rate.
      */
     @Override

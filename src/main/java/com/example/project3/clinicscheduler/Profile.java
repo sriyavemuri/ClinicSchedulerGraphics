@@ -91,7 +91,7 @@ public class Profile implements Comparable<Profile>{
     /**
      * Compares two profile objects based on the "key" valye.
      * @param profile the object to be compared.
-     * @return return 1 if the profile if this profile object is greater than "profile", return -1 if smaller;
+     * @return return 1 if this profile object is greater than "profile", return -1 if smaller;
      * return 0 if they are equal.
      */
     @Override

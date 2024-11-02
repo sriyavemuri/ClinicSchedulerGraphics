@@ -6,7 +6,7 @@ import com.example.project3.clinicscheduler.Profile;
 /**
  * Class for sorting appointments based on specified criteria.
  *
- * @author Your Name
+ * @author Sriya Vemuri, Zeel Patel
  */
 public class Sort {
 

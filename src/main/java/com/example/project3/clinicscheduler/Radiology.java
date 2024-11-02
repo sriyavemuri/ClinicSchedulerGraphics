@@ -7,6 +7,10 @@ package com.example.project3.clinicscheduler;
 public enum Radiology {
     XRAY, ULTRASOUND, CATSCAN;
 
+    /**
+     * Retyrns String representation of radiology/type of imaging.
+     * @return type of imaging as a string in all caps.
+     */
     @Override
     public String toString() {
         switch (this) {

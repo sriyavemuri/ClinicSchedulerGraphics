@@ -69,18 +69,4 @@ public abstract class Provider extends Person {
         }
         return true; // The provider is available
     }
-
-//    public boolean isAvailable(Date date, Timeslot timeslot, Appointment[] appointments) {
-//        if (appointments == null) {
-//            return true; // Provider is available if there are no appointments
-//        }
-//        for (Appointment appointment : appointments) {
-//            if (appointment != null && appointment.getProvider().equals(this)
-//                    && appointment.getDate().equals(date)
-//                    && appointment.getTimeslot().equals(timeslot)) {
-//                return false; // The provider is not available if there is a conflicting appointment
-//            }
-//        }
-//        return true; // The provider is available
-//    }
 }
