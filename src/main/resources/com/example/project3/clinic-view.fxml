@@ -32,8 +32,19 @@
                                     <RadioButton fx:id="imagingServiceRadio" text="Imaging Service" />
                                 </HBox>
 
-                                <Label text="Timeslot:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-                                <ComboBox fx:id="timeslotCombo" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                <VBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                    <!-- Timeslot Combo -->
+                                    <Label text="Timeslot:" />
+                                    <ComboBox fx:id="timeslotCombo" />
+
+                                    <!-- Imaging Type Combo -->
+                                    <Label fx:id="imagingTypeLabel" text="Imaging Type:" visible="false" managed="false" />
+                                    <ComboBox fx:id="imagingTypeCombo" visible="false" managed="false" />
+
+                                    <!-- NPI TextField for Office Visits -->
+                                    <Label fx:id="npiLabel" text="Doctor's NPI:" visible="false" managed="false" />
+                                    <TextField fx:id="npiTextField" promptText="Enter NPI" visible="false" managed="false" />
+                                </VBox>
 
                                 <Label text="Provider:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
                                 <ComboBox fx:id="providerCombo" GridPane.columnIndex="1" GridPane.rowIndex="6" />
