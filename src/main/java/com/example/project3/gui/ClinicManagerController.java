@@ -11,7 +11,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import com.example.project3.clinicscheduler.Timeslot;
-import com.example.project3.util.Date;
 import javafx.stage.FileChooser;
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,13 +19,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import javafx.scene.control.TabPane;
+import com.example.project3.util.*;
 
 public class ClinicManagerController {
 
     // FXML Fields
     @FXML private DatePicker appointmentDate, followUpDate, newDatePicker;
     @FXML private TextField patientName, providerName;
-    @FXML private ComboBox<String> timeslotCombo, providerCombo, newTimeComboBox;
+    @FXML private ComboBox<String> timeslotCombo, providerCombo, newTimeComboBox, existingTimeComboBox;
     @FXML private ComboBox<String> appointmentComboBox;
     @FXML private RadioButton officeVisitRadio, imagingServiceRadio;
     @FXML private Button loadProvidersButton, scheduleButton, cancelButton, clearButton, rescheduleButton;
@@ -46,7 +46,9 @@ public class ClinicManagerController {
 
 
     private ObservableList<Location> locations;
-
+    private ToggleGroup visitTypeGroup;
+    private List<String> officeProviders = new List<>();
+    private List<String> imagingProviders = new List<>();
 
     // ObservableLists for ComboBox (example)
 
@@ -73,6 +75,13 @@ public class ClinicManagerController {
         clearButton.setOnAction(this::handleClear);
         clearRescheduleButton.setOnAction(this::handleClearReschedule);
 
+        visitTypeGroup = new ToggleGroup();
+        officeVisitRadio.setToggleGroup(visitTypeGroup);
+        imagingServiceRadio.setToggleGroup(visitTypeGroup);
+        visitTypeGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            updateProviderCombo();
+        });
+
         // Disable the provider dropdown initially
         providerCombo.setDisable(true);
     }
@@ -83,13 +92,11 @@ public class ClinicManagerController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Provider File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
-
         File selectedFile = fileChooser.showOpenDialog(loadProvidersButton.getScene().getWindow());
-
         if (selectedFile != null) {
-            ObservableList<String> providerNames = readProviderFile(selectedFile);
-            if (providerNames != null) {
-                providerCombo.setItems(providerNames); // Populate the dropdown
+            boolean success = readProviderFile(selectedFile);
+            if (success) {
+                updateProviderCombo(); // Update the ComboBox based on the selected visit type
                 providerCombo.setDisable(false); // Enable the dropdown
                 outputArea.appendText("Providers loaded successfully.\n");
             } else {
@@ -100,21 +107,48 @@ public class ClinicManagerController {
         }
     }
 
-    // Helper method to read the provider file and return an ObservableList of providers
-    private ObservableList<String> readProviderFile(File file) {
+    private void updateProviderCombo() {
+        List<String> selectedProviders;
+        if (officeVisitRadio.isSelected()) {
+            selectedProviders = officeProviders;
+        } else if (imagingServiceRadio.isSelected()) {
+            selectedProviders = imagingProviders;
+        } else {
+            selectedProviders = new List<>(); // Empty list if neither is selected
+        }
+        // Convert custom List to ObservableList
         ObservableList<String> providers = FXCollections.observableArrayList();
+        for (int i = 0; i < selectedProviders.size(); i++) {
+            providers.add(selectedProviders.get(i));
+        }
+        providerCombo.setItems(providers);
+    }
+
+    private boolean readProviderFile(File file) {
+        // Clear existing providers
+        officeProviders = new List<>();
+        imagingProviders = new List<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (!line.trim().isEmpty()) {
-                    providers.add(line.trim()); // Add non-empty lines as provider names
+                    String[] data = line.trim().split("\\s+");
+                    if (data.length >= 3) {
+                        String providerType = data[0];
+                        String providerName = data[1] + " " + data[2]; // Assuming data[1] = First Name, data[2] = Last Name
+                        if ("D".equals(providerType)) {
+                            officeProviders.add(providerName);
+                        } else if ("T".equals(providerType)) {
+                            imagingProviders.add(providerName);
+                        }
+                    }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return false;
         }
-        return providers;
+        return true;
     }
 
     private void populateTimeslotComboBoxes() {
@@ -128,6 +162,7 @@ public class ClinicManagerController {
         // Set items for timeslotCombo and newTimeComboBox
         timeslotCombo.setItems(FXCollections.observableArrayList(timeslotStrings));
         newTimeComboBox.setItems(FXCollections.observableArrayList(timeslotStrings));
+        existingTimeComboBox.setItems(FXCollections.observableArrayList(timeslotStrings));
     }
 
 
@@ -228,7 +263,9 @@ public class ClinicManagerController {
         // Get the new appointment details from the UI components
         String firstName = firstNameField.getText();
         String lastName = lastNameField.getText();
-        LocalDate newDate = newDatePicker.getValue();
+        LocalDate appointmentDate = newDatePicker.getValue();
+        LocalDate dob = dobPickerReschedule.getValue();
+        String oldTime = existingTimeComboBox.getValue();
         String newTime = newTimeComboBox.getValue();
 
         // Validate inputs

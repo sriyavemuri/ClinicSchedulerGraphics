@@ -60,14 +60,16 @@
                                 <Label text="Date of Birth:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                                 <DatePicker fx:id="dobPickerReschedule" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
+                                <Label text="Date of Appointment:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                <DatePicker fx:id="existingDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                                <Label text="New Date:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                                <DatePicker fx:id="newDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                <Label text="Current Time:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                <ComboBox fx:id="existingTimeComboBox" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-                                <Label text="New Time:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                                <ComboBox fx:id="newTimeComboBox" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                <Label text="Change Time To:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                <ComboBox fx:id="newTimeComboBox" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
-                                <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="6">
                                     <Button fx:id="rescheduleButton" text="Reschedule" onAction="#handleReschedule" />
                                     <Button fx:id="clearRescheduleButton" onAction="#handleClearReschedule" text="Clear" />
                                 </HBox>
