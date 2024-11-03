@@ -23,7 +23,7 @@ public class ClinicManagerController {
     /**
      * FXML Fields
      */
-    @FXML private DatePicker appointmentDate, followUpDate, newDatePicker, dobPicker, dobPickerReschedule;
+    @FXML private DatePicker appointmentDate, followUpDate, existingDatePicker, dobPicker, dobPickerReschedule;
     @FXML private TextField patientName, providerName, firstNameField, lastNameField, patientFirstName, patientLastName, npiTextField;
     @FXML private ComboBox<Timeslot> timeslotCombo, newTimeComboBox, existingTimeComboBox;
     @FXML private ComboBox<String> providerCombo;
@@ -779,10 +779,10 @@ public class ClinicManagerController {
     private void handleReschedule(ActionEvent event) {
         String firstName = firstNameField.getText();
         String lastName = lastNameField.getText();
-        Date oldDate = convertLocalDateToDate(newDatePicker.getValue());
+        Date oldDate = convertLocalDateToDate(existingDatePicker.getValue());
         Date dob = convertLocalDateToDate(dobPickerReschedule.getValue());
-        Timeslot newAppointmentTimeslot = existingTimeComboBox.getValue();
-        Timeslot oldAppointmentTimeslot = newTimeComboBox.getValue();
+        Timeslot newAppointmentTimeslot = newTimeComboBox.getValue();
+        Timeslot oldAppointmentTimeslot = existingTimeComboBox.getValue();
         if (firstName.isEmpty() || lastName.isEmpty() || newAppointmentTimeslot == null ||
                 oldAppointmentTimeslot == null || oldDate == null || dob == null) {
             statusLabel.setText("Please fill in all fields.");
@@ -844,7 +844,7 @@ public class ClinicManagerController {
         lastNameField.clear();
         // Clear date pickers
         dobPickerReschedule.setValue(null); // Use different ID for the reschedule DOB picker
-        newDatePicker.setValue(null);
+        existingDatePicker.setValue(null);
         // Clear combo box
         newTimeComboBox.getSelectionModel().clearSelection();
     }
