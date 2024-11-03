@@ -825,12 +825,15 @@ public class ClinicManagerController {
         // Clear text fields
         patientFirstName.clear();
         patientLastName.clear();
+        npiTextField.clear();
         // Clear date pickers
         appointmentDate.setValue(null);
         dobPicker.setValue(null);
         // Clear combo boxes
         timeslotCombo.getSelectionModel().clearSelection();
         providerCombo.getSelectionModel().clearSelection();
+        // Clear radio button selection
+        visitTypeGroup.selectToggle(null);
     }
 
     /**
@@ -847,6 +850,7 @@ public class ClinicManagerController {
         existingDatePicker.setValue(null);
         // Clear combo box
         newTimeComboBox.getSelectionModel().clearSelection();
+        existingTimeComboBox.getSelectionModel().clearSelection();
     }
 
     /**
@@ -951,7 +955,7 @@ public class ClinicManagerController {
         sortByLocationLengthVersion();
         outputArea.appendText("\n** List of appointments, ordered by county/date/time. **\n");
         for (int i = 0; i < appointmentList.size(); i++) {
-            System.out.println(appointmentList.get(i).toString());
+            outputArea.appendText(appointmentList.get(i).toString());
         }
         outputArea.appendText("** end of list **\n");
     }
@@ -1102,7 +1106,7 @@ public class ClinicManagerController {
             return;
         }
         sortByLocation();
-        outputArea.appendText("\n** List of radiology appointments ordered by county/date/time.**n");
+        outputArea.appendText("\n** List of radiology appointments ordered by county/date/time.**\n");
         for (int i = 0; i < appointmentList.size(); i++) {
             if ((appointmentList.get(i) instanceof Imaging)) {
                 outputArea.appendText(appointmentList.get(i) + "\n");
