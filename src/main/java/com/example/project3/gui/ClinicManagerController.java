@@ -92,6 +92,10 @@ public class ClinicManagerController {
      * @return Date object from xml file
      */
     private Date convertLocalDateToDate(LocalDate localDate) {
+        if (localDate == null) {
+            outputArea.appendText("Please select a valid date.\n");
+            return null;
+        }
         int year = localDate.getYear();
         int month = localDate.getMonthValue();
         int day = localDate.getDayOfMonth();
@@ -583,6 +587,48 @@ public class ClinicManagerController {
     }
 
     /**
+     * Helper method. Checks if the date is a date where there can be an appointment.
+     * @param appointmentDate Requested appointment as a Date object
+     * @return false and prints reason if not a valid date for appointment, true otherwise.
+     */
+    private boolean isValidAppointmentDate(Date appointmentDate) {
+        if (!appointmentDate.isValid()) {
+            outputArea.appendText("Appointment date: " + appointmentDate + " is not a valid calendar date.\n");
+            return false;
+        }
+        if (!appointmentDate.isTodayOrPast()) {
+            outputArea.appendText("Appointment date: " + appointmentDate + " is today or a date before today.\n");
+            return false;
+        }
+        if (!appointmentDate.withinSixMonths()) {
+            outputArea.appendText("Appointment date: " + appointmentDate + " is not within six months.\n");
+            return false;
+        }
+        if (appointmentDate.isWeekend()) {
+            outputArea.appendText("Appointment date: " + appointmentDate + " is Saturday or Sunday.\n");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks if a DOB is a valid date to be a date of birth.
+     * @param DOB Date of Birth as a Date object
+     * @return true if it is a valid date to be a date of birth, false otherwise.
+     */
+    private boolean isValidDOB(Date DOB){
+        if (!DOB.isValid()){
+            outputArea.appendText("Patient dob: " + DOB + " is not a valid calendar date.\n");
+            return false;
+        }
+        if (DOB.isTodayOrFuture()){
+            outputArea.appendText("Patient dob: " + DOB + " is today or a date after today.\n");
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * D and T - Schedule Doctor and Technician Appointment.
      * @param event JavaFx action.
      */
@@ -599,6 +645,8 @@ public class ClinicManagerController {
             outputArea.appendText("Please fill all the required fields.\n");
             return;
         }
+        if (!isValidAppointmentDate(apptDate)) {return;}
+        if (!isValidDOB(dob)) {return;}
         Profile patientProfile = new Profile(patientFirstName,patientLastName, dob);
         if (imagingServiceRadio.isSelected()) {
             Radiology imagingType = imagingTypeCombo.getValue();
@@ -638,6 +686,8 @@ public class ClinicManagerController {
             outputArea.appendText("Please fill all the required fields.\n");
             return;
         }
+        if (!isValidAppointmentDate(apptDate)) {return;}
+        if (!isValidDOB(dob)) {return;}
         Profile patientProfile = new Profile(patientFirstName,patientLastName, dob);
         Appointment appointmentToCancel = null;
         for (int i = 0; i < appointmentList.size(); i++) {
@@ -738,6 +788,8 @@ public class ClinicManagerController {
             statusLabel.setText("Please fill in all fields.");
             return;
         }
+        if (!isValidAppointmentDate(oldDate)) {return;}
+        if (!isValidDOB(dob)) {return;}
         Profile patientProfile = new Profile (firstName, lastName, dob);
         Appointment appointmentToReschedule = findAppointmentToReschedule(oldDate, oldAppointmentTimeslot, patientProfile);
         if (appointmentToReschedule == null) { return; }
@@ -760,7 +812,6 @@ public class ClinicManagerController {
                     patientProfile + " " +
                     providerInfo + "\n");
         }
-        // Update status label
         statusLabel.setText("Appointment rescheduled successfully.");
         handleClearReschedule(event);
     }
