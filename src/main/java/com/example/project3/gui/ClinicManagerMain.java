@@ -22,6 +22,7 @@ public class ClinicManagerMain extends Application {
         primaryStage.setTitle("Clinic Manager");
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.toFront();
     }
 
     /**
